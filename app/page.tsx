@@ -10,6 +10,7 @@ function cn(...classes: Array<string | false | null | undefined>) {
 
 const shelfEase = [0.22, 1, 0.36, 1] as const;
 
+const APP_SIGN_IN_URL = "https://app.shelflens.co.uk";
 const REQUEST_ACCESS_EVENT = "shelflens:open-request-access";
 
 function openRequestAccess() {
@@ -190,11 +191,11 @@ type RequestAccessFieldProps = {
 };
 
 const requestAccessInputClass =
-  "min-h-[46px] w-full min-w-0 rounded-2xl border border-white/10 bg-[#020813]/86 px-3.5 py-3 text-sm font-medium text-white outline-none shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition placeholder:text-white/28 focus:border-cyan-300/44 focus:bg-[#06111f] focus:ring-2 focus:ring-cyan-300/16";
+  "min-h-[52px] w-full min-w-0 rounded-2xl border border-cyan-400/20 bg-slate-950/70 px-4 py-3 [font-family:inherit] text-[15px] font-semibold leading-6 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.055),0_0_0_1px_rgba(15,23,42,0.45)] outline-none transition duration-200 placeholder:text-slate-500 hover:border-cyan-300/35 hover:bg-slate-950/85 focus:border-cyan-300/70 focus:bg-slate-950/90 focus:ring-2 focus:ring-cyan-300/20 focus:shadow-[0_0_30px_rgba(34,211,238,0.13),inset_0_1px_0_rgba(255,255,255,0.08)] sm:min-h-[54px]";
 
 function RequestAccessLabel({ children, required = false }: { children: React.ReactNode; required?: boolean }) {
   return (
-    <label className="mb-1.5 block text-xs font-bold text-white/70">
+    <label className="mb-2.5 block text-xs font-bold uppercase leading-none tracking-[0.18em] text-cyan-100/80">
       {children}
       {required && <span className="ml-1 text-cyan-200">*</span>}
     </label>
@@ -213,7 +214,7 @@ function RequestAccessField({
   type = "text",
 }: RequestAccessFieldProps) {
   return (
-    <div className="min-w-0">
+    <div className="group/field min-w-0">
       <RequestAccessLabel required={required}>{label}</RequestAccessLabel>
       <input
         id={`request-access-${field}`}
@@ -225,7 +226,10 @@ function RequestAccessField({
         placeholder={placeholder}
         required={required}
         onChange={(event) => onChange(field, event.target.value)}
-        className={requestAccessInputClass}
+        className={cn(
+          requestAccessInputClass,
+          "caret-cyan-200 selection:bg-cyan-300/25 selection:text-white",
+        )}
       />
     </div>
   );
@@ -256,6 +260,7 @@ function RequestAccessModal() {
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    document.body.classList.add("request-access-open");
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && submitState !== "loading") {
@@ -266,6 +271,7 @@ function RequestAccessModal() {
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
+      document.body.classList.remove("request-access-open");
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, submitState]);
@@ -327,7 +333,11 @@ function RequestAccessModal() {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[10000] overflow-y-auto bg-[#020713]/82 px-3 py-4 backdrop-blur-xl sm:px-6 sm:py-8"
+      className="fixed inset-0 z-[10000] overflow-y-auto bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.14),transparent_34%),rgba(2,7,19,0.88)] px-3 py-4 backdrop-blur-2xl sm:px-6 sm:py-8"
+      style={{
+        fontFamily:
+          'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      }}
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) closeModal();
@@ -340,19 +350,20 @@ function RequestAccessModal() {
         initial={{ opacity: 0, y: 18, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.28, ease: shelfEase }}
-        className="relative mx-auto w-full max-w-[760px] overflow-hidden rounded-[28px] border border-cyan-300/18 bg-[#07111f]/96 p-4 shadow-[0_34px_130px_rgba(0,0,0,0.58),0_0_82px_rgba(34,211,238,0.12),inset_0_1px_0_rgba(255,255,255,0.06)] sm:rounded-[34px] sm:p-6"
+        className="relative mx-auto w-full max-w-[780px] overflow-hidden rounded-[28px] border border-cyan-400/20 bg-slate-950/88 p-4 shadow-[0_34px_130px_rgba(0,0,0,0.62),0_0_90px_rgba(34,211,238,0.16),0_0_70px_rgba(16,185,129,0.08),inset_0_1px_0_rgba(255,255,255,0.08)] ring-1 ring-emerald-300/10 backdrop-blur-2xl sm:rounded-[34px] sm:p-7"
       >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(34,211,238,0.16),transparent_34%),radial-gradient(circle_at_88%_24%,rgba(99,102,241,0.13),transparent_32%),radial-gradient(circle_at_82%_86%,rgba(16,185,129,0.10),transparent_34%)]" />
-        <div className="pointer-events-none absolute inset-x-[-20%] top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(34,211,238,0.76),rgba(124,92,255,0.58),transparent)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_0%,rgba(34,211,238,0.18),transparent_32%),radial-gradient(circle_at_92%_18%,rgba(99,102,241,0.12),transparent_30%),radial-gradient(circle_at_82%_90%,rgba(16,185,129,0.13),transparent_36%)]" />
+        <div className="pointer-events-none absolute inset-x-[-20%] top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(34,211,238,0.88),rgba(16,185,129,0.52),transparent)]" />
+        <div className="pointer-events-none absolute inset-0 rounded-[inherit] border border-white/[0.025]" />
 
         <div className="relative">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <SectionEyebrow icon={<Icons.Sparkles className="h-3.5 w-3.5" />}>Request access</SectionEyebrow>
-              <h2 id="request-access-title" className="mt-4 text-2xl font-black tracking-[-0.045em] text-white sm:text-4xl">
+              <h2 id="request-access-title" className="mt-4 text-2xl font-black tracking-[-0.035em] text-white sm:text-4xl">
                 Tell us about your store.
               </h2>
-              <p className="mt-2 max-w-[620px] text-sm leading-6 text-white/56 sm:text-base sm:leading-7">
+              <p className="mt-3 max-w-[620px] text-sm font-medium leading-6 text-slate-300/72 sm:text-base sm:leading-7">
                 Share the shelf visibility problem you want ShelfLens to help with. We will review it and follow up with access details.
               </p>
             </div>
@@ -360,38 +371,38 @@ function RequestAccessModal() {
               type="button"
               aria-label="Close request access form"
               onClick={closeModal}
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.04] text-white/70 transition hover:border-cyan-300/24 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/60"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-cyan-300/18 bg-slate-950/55 text-cyan-100/74 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_0_26px_rgba(34,211,238,0.08)] transition hover:border-cyan-300/42 hover:bg-cyan-300/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
             >
               <Icons.X className="h-4 w-4" />
             </button>
           </div>
 
           {submitState === "success" ? (
-            <div className="mt-6 rounded-[24px] border border-emerald-300/22 bg-emerald-400/[0.08] p-5 shadow-[0_0_50px_rgba(16,185,129,0.08)]">
+            <div className="mt-7 overflow-hidden rounded-[24px] border border-emerald-300/28 bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(2,8,19,0.78))] p-5 shadow-[0_0_54px_rgba(16,185,129,0.13),inset_0_1px_0_rgba(255,255,255,0.065)] sm:p-6">
               <div className="flex items-start gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-emerald-300/28 bg-emerald-400/[0.12] text-emerald-200">
+                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-emerald-300/30 bg-emerald-400/[0.13] text-emerald-200 shadow-[0_0_24px_rgba(16,185,129,0.16)]">
                   <Icons.Check className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-base font-black text-white">Request received</div>
-                  <p className="mt-2 text-sm leading-6 text-white/68">
+                  <div className="text-lg font-black tracking-[-0.02em] text-white">Request received</div>
+                  <p className="mt-2 text-sm font-medium leading-6 text-emerald-50/76 sm:text-base sm:leading-7">
                     Request received — we’ll review your store details and send platform access if it’s a fit.
                   </p>
                 </div>
               </div>
-              <Button type="button" className="mt-5 w-full sm:w-auto" onClick={closeModal}>
+              <Button type="button" className="mt-5 h-[52px] w-full px-7 text-sm text-slate-950 sm:w-auto" onClick={closeModal}>
                 Close
               </Button>
             </div>
           ) : (
-            <form className="mt-6 grid gap-4" noValidate onSubmit={handleSubmit}>
-              <div className="grid gap-4 sm:grid-cols-2">
+            <form className="mt-7 grid gap-5 sm:gap-6" noValidate onSubmit={handleSubmit}>
+              <div className="grid gap-4 sm:grid-cols-2 sm:gap-x-4 sm:gap-y-5">
                 <RequestAccessField
                   field="fullName"
                   label="Full name"
                   value={form.fullName}
                   autoComplete="name"
-                  placeholder="Your name"
+                  placeholder="Aimen Sunabara"
                   onChange={updateField}
                 />
                 <RequestAccessField
@@ -400,7 +411,7 @@ function RequestAccessModal() {
                   value={form.email}
                   type="email"
                   autoComplete="email"
-                  placeholder="you@company.com"
+                  placeholder="you@store.co.uk"
                   onChange={updateField}
                 />
                 <RequestAccessField
@@ -409,7 +420,7 @@ function RequestAccessModal() {
                   value={form.phoneNumber}
                   type="tel"
                   autoComplete="tel"
-                  placeholder="+44..."
+                  placeholder="+44 7000 000000"
                   onChange={updateField}
                 />
                 <RequestAccessField
@@ -417,7 +428,7 @@ function RequestAccessModal() {
                   label="Store / business name"
                   value={form.businessName}
                   autoComplete="organization"
-                  placeholder="Business name"
+                  placeholder="Store or group name"
                   onChange={updateField}
                 />
                 <RequestAccessField
@@ -425,7 +436,7 @@ function RequestAccessModal() {
                   label="Number of stores"
                   value={form.storeCount}
                   inputMode="numeric"
-                  placeholder="1"
+                  placeholder="1, 5, 20..."
                   onChange={updateField}
                 />
                 <RequestAccessField
@@ -433,30 +444,39 @@ function RequestAccessModal() {
                   label="Location / city"
                   value={form.location}
                   autoComplete="address-level2"
-                  placeholder="Manchester"
+                  placeholder="Manchester, London..."
                   onChange={updateField}
                 />
               </div>
 
               <div className="min-w-0">
                 <RequestAccessLabel required>Current issue</RequestAccessLabel>
-                <select
-                  id="request-access-currentIssue"
-                  name="currentIssue"
-                  value={form.currentIssue}
-                  required
-                  onChange={(event) => updateField("currentIssue", event.target.value)}
-                  className={requestAccessInputClass}
-                >
-                  <option value="" className="bg-[#07111f] text-white">
-                    Select issue
-                  </option>
-                  {requestAccessIssueOptions.map((issue) => (
-                    <option key={issue} value={issue} className="bg-[#07111f] text-white">
-                      {issue}
+                <div className="relative">
+                  <select
+                    id="request-access-currentIssue"
+                    name="currentIssue"
+                    value={form.currentIssue}
+                    required
+                    onChange={(event) => updateField("currentIssue", event.target.value)}
+                    className={cn(
+                      requestAccessInputClass,
+                      "appearance-none pr-12",
+                      form.currentIssue ? "text-white" : "text-slate-500",
+                    )}
+                  >
+                    <option value="" className="bg-slate-950 text-slate-400">
+                      Choose the closest issue
                     </option>
-                  ))}
-                </select>
+                    {requestAccessIssueOptions.map((issue) => (
+                      <option key={issue} value={issue} className="bg-slate-950 text-white">
+                        {issue}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-xl border border-cyan-300/10 bg-cyan-300/[0.045] text-cyan-100/70">
+                    <Icons.ChevronDown className="h-4 w-4" />
+                  </div>
+                </div>
               </div>
 
               <div className="min-w-0">
@@ -466,24 +486,34 @@ function RequestAccessModal() {
                   name="message"
                   value={form.message}
                   rows={4}
-                  placeholder="Tell us what shelves, stores, or gaps you want to monitor."
+                  placeholder="Tell us what shelf gaps, locations, or store workflows you want to monitor."
                   onChange={(event) => updateField("message", event.target.value)}
-                  className={cn(requestAccessInputClass, "min-h-[118px] resize-y leading-6")}
+                  className={cn(
+                    requestAccessInputClass,
+                    "min-h-[132px] resize-y leading-6 caret-cyan-200 selection:bg-cyan-300/25 selection:text-white",
+                  )}
                 />
               </div>
 
               {submitState === "error" && (
-                <div className="rounded-2xl border border-red-400/24 bg-red-500/[0.08] px-4 py-3 text-sm font-semibold leading-6 text-red-100">
-                  {errorMessage || "Something went wrong. Please try again."}
+                <div className="rounded-2xl border border-red-400/30 bg-[linear-gradient(135deg,rgba(239,68,68,0.13),rgba(2,8,19,0.78))] px-4 py-3.5 text-sm font-semibold leading-6 text-red-50 shadow-[0_0_34px_rgba(239,68,68,0.13),inset_0_1px_0_rgba(255,255,255,0.045)]">
+                  <div className="flex items-start gap-2.5">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-red-300 shadow-[0_0_12px_rgba(248,113,113,0.8)]" />
+                    <span>{errorMessage || "Something went wrong. Please try again."}</span>
+                  </div>
                 </div>
               )}
 
-              <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
-                <Button type="submit" disabled={submitState === "loading"} className="w-full sm:w-auto">
+              <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center sm:pt-0">
+                <Button
+                  type="submit"
+                  disabled={submitState === "loading"}
+                  className="h-[54px] w-full px-7 [font-family:inherit] text-sm font-black text-slate-950 shadow-[0_20px_58px_rgba(34,211,238,0.32),inset_0_1px_0_rgba(255,255,255,0.46)] sm:w-auto sm:text-base"
+                >
                   {submitState === "loading" ? "Sending request..." : "Request access"}
                   <Icons.ArrowRight className="ml-3 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
-                <div className="text-xs leading-5 text-white/42 sm:text-sm">Your details are emailed securely through the ShelfLens server.</div>
+                <div className="text-xs font-medium leading-5 text-slate-300/50 sm:text-sm sm:leading-6">Your details are emailed securely through the ShelfLens server.</div>
               </div>
             </form>
           )}
@@ -706,28 +736,15 @@ const lifecycleSteps: LifecycleStep[] = [
     ],
   },
   {
-    time: "14:43",
-    title: "Staff refills shelf",
-    detail: "Bay evidence updated",
-    state: "Action verified",
-    tone: "green",
-    metrics: [
-      { label: "Coverage", value: "78%", level: 78 },
-      { label: "Signal", value: "+22%", level: 78 },
-      { label: "Gaps", value: "1 gap", level: 34 },
-      { label: "Status", value: "Refill", level: 72 },
-    ],
-  },
-  {
     time: "14:46",
-    title: "Next scan confirms recovery",
-    detail: "Recovered 3m ago",
+    title: "Staff refills shelf / recovery verified",
+    detail: "Refill confirmed and bay recovered.",
     state: "Recovered",
     tone: "green",
     recovered: true,
     metrics: [
       { label: "Coverage", value: "78%", level: 78 },
-      { label: "Signal", value: "Closed", level: 92 },
+      { label: "Signal", value: "Verified", level: 92 },
       { label: "Gaps", value: "0 gaps", level: 100 },
       { label: "Status", value: "Done", level: 100 },
     ],
@@ -754,9 +771,7 @@ const lifecycleEvents: Array<{
   { title: "Capture uploaded", time: "14:32", tone: "cyan" },
   { title: "ShelfLens detects 4 gaps", time: "14:33", tone: "amber" },
   { title: "Bay becomes critical", time: "14:34", tone: "red" },
-  { title: "Staff refills shelf", time: "14:43", tone: "green", complete: true },
-  { title: "Next scan confirms recovery", time: "14:46", tone: "green", complete: true },
-  { title: "Issue lifecycle complete", time: "14:46", tone: "green", complete: true },
+  { title: "Staff refills shelf / recovery verified", time: "14:46", tone: "green", complete: true },
 ];
 
 const pampersShelfRows: PampersShelfRow[] = [
@@ -2297,22 +2312,43 @@ function LifecycleStatusPill({
 function LifecycleProgressRail({ shouldReduceMotion }: { shouldReduceMotion: boolean }) {
   return (
     <div className="relative px-1 pt-1">
-      <div className="absolute left-[12.5%] right-[12.5%] top-[25px] h-px overflow-visible bg-white/14">
+      <div className="absolute left-[12.5%] right-[12.5%] top-[25px] h-4 -translate-y-1/2 overflow-hidden">
+        <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white/10" />
         <motion.div
           initial={shouldReduceMotion ? false : { scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: shouldReduceMotion ? 0 : 1.35, ease: shelfEase, delay: 0.16 }}
           style={{ originX: 0 }}
-          className="h-full rounded-full bg-[linear-gradient(90deg,#22d3ee_0%,#facc15_34%,#ef4444_62%,#4ade80_100%)] shadow-[0_0_22px_rgba(34,211,238,0.34)]"
+          className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-[linear-gradient(90deg,#22d3ee_0%,#facc15_34%,#ef4444_64%,#4ade80_100%)] opacity-75 blur-[0.5px] shadow-[0_0_22px_rgba(34,211,238,0.34)]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 opacity-80"
+          style={{
+            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.9) 1.2px, transparent 1.95px)",
+            backgroundSize: "18px 4px",
+            backgroundPosition: "0 center",
+          }}
         />
         {!shouldReduceMotion && (
-          <motion.span
-            aria-hidden
-            className="absolute -top-[5px] h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_18px_rgba(255,255,255,0.95),0_0_34px_rgba(34,211,238,0.72)]"
-            animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
-            transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.35 }}
-          />
+          <>
+            <motion.span
+              aria-hidden
+              className="absolute top-1/2 h-3 w-20 -translate-y-1/2 rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.9),transparent)] blur-[1px]"
+              animate={{ left: ["-14%", "100%"], opacity: [0, 0.95, 0] }}
+              transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.28 }}
+            />
+            {[0, 0.24, 0.48].map((delay) => (
+              <motion.span
+                key={delay}
+                aria-hidden
+                className="absolute top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-white shadow-[0_0_18px_rgba(255,255,255,0.95),0_0_34px_rgba(34,211,238,0.72)]"
+                animate={{ left: ["0%", "100%"], opacity: [0, 1, 0] }}
+                transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay }}
+              />
+            ))}
+          </>
         )}
       </div>
 
@@ -2325,7 +2361,10 @@ function LifecycleProgressRail({ shouldReduceMotion }: { shouldReduceMotion: boo
               <motion.div
                 animate={!shouldReduceMotion ? { scale: [1, 1.055, 1], boxShadow: toneStyle.pulseShadow } : undefined}
                 transition={!shouldReduceMotion ? { duration: 2.15, repeat: Infinity, ease: "easeInOut", delay: index * 0.18 } : undefined}
-                className={cn("mx-auto grid h-12 w-12 place-items-center rounded-full border bg-[#04101c] text-sm font-black shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]", toneStyle.node)}
+                className={cn(
+                  "mx-auto grid h-12 w-12 place-items-center rounded-full border bg-[#04101c] text-sm font-black shadow-[0_0_28px_rgba(34,211,238,0.12),inset_0_1px_0_rgba(255,255,255,0.1)] ring-1 ring-white/5",
+                  toneStyle.node,
+                )}
               >
                 {stage.number}
               </motion.div>
@@ -2335,6 +2374,39 @@ function LifecycleProgressRail({ shouldReduceMotion }: { shouldReduceMotion: boo
           );
         })}
       </div>
+    </div>
+  );
+}
+
+function LifecycleMobileProgressRail({ shouldReduceMotion }: { shouldReduceMotion: boolean }) {
+  return (
+    <div className="pointer-events-none absolute bottom-7 left-[22px] top-7 z-0 sm:hidden" aria-hidden>
+      <div className="absolute inset-y-0 left-0 w-px bg-[linear-gradient(180deg,rgba(34,211,238,0.28),rgba(250,204,21,0.34),rgba(248,113,113,0.34),rgba(74,222,128,0.34))]" />
+      <div
+        className="absolute inset-y-0 left-[-1px] w-[3px] opacity-65"
+        style={{
+          backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1.7px)",
+          backgroundSize: "3px 11px",
+          color: "rgba(103,232,249,0.72)",
+        }}
+      />
+      {!shouldReduceMotion && (
+        <>
+          <motion.span
+            className="absolute left-[-4px] h-2 w-2 rounded-full bg-cyan-200 shadow-[0_0_18px_rgba(34,211,238,0.95),0_0_34px_rgba(34,211,238,0.48)]"
+            animate={{ top: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.25 }}
+          />
+          {[0, 0.28, 0.56].map((delay) => (
+            <motion.span
+              key={delay}
+              className="absolute left-[-3px] h-1.5 w-1.5 rounded-full bg-white shadow-[0_0_14px_rgba(255,255,255,0.9)]"
+              animate={{ top: ["0%", "100%"], opacity: [0, 0.85, 0] }}
+              transition={{ duration: 2.1, repeat: Infinity, ease: "easeInOut", delay }}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 }
@@ -2373,7 +2445,7 @@ function LifecycleStepCard({
   return (
     <div
       className={cn(
-        "group relative ml-11 min-w-0 overflow-hidden rounded-[22px] border bg-[#020813]/90 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.045)] transition-[border-color,background-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 sm:ml-0 min-[1380px]:p-3.5 2xl:p-4",
+        "group relative ml-12 min-w-0 overflow-visible rounded-[22px] border bg-[#020813]/90 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.045)] transition-[border-color,background-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 sm:ml-0 sm:overflow-hidden min-[1380px]:p-3.5 2xl:p-4",
         toneStyle.border,
         "hover:border-white/22 hover:bg-[#06111f]/94",
       )}
@@ -2389,7 +2461,7 @@ function LifecycleStepCard({
 
       <div
         className={cn(
-          "absolute -left-[48px] top-5 grid h-9 w-9 place-items-center rounded-full border bg-[#04101c] text-xs font-black sm:relative sm:left-auto sm:top-auto sm:mb-4 sm:h-10 sm:w-10",
+          "absolute -left-[46px] top-5 z-10 grid h-10 w-10 place-items-center rounded-full border bg-[#04101c] text-xs font-black shadow-[0_0_22px_rgba(34,211,238,0.10),inset_0_1px_0_rgba(255,255,255,0.08)] sm:relative sm:left-auto sm:top-auto sm:mb-4",
           toneStyle.node,
         )}
       >
@@ -2406,7 +2478,7 @@ function LifecycleStepCard({
         <div className="pr-8 sm:pr-0">
           <div className="min-w-0 overflow-hidden">
             <div className="text-xs font-black text-white/42">{step.time}</div>
-            <div className="mt-2 text-sm font-black leading-5 text-white sm:text-base min-[1380px]:text-[15px] 2xl:text-base">{step.title}</div>
+            <div className="mt-2 text-sm font-black leading-5 text-white sm:text-[15px] xl:text-base">{step.title}</div>
           </div>
           <div className="mt-3">
             <LifecycleStatusPill tone={step.tone}>{step.state}</LifecycleStatusPill>
@@ -2599,7 +2671,7 @@ function LiveIssueLifecycleSection() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(34,211,238,0.13),transparent_32%),radial-gradient(circle_at_90%_20%,rgba(250,204,21,0.08),transparent_28%),radial-gradient(circle_at_86%_78%,rgba(16,185,129,0.11),transparent_34%)]" />
         <div className="pointer-events-none absolute inset-x-[-20%] top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(34,211,238,0.78),rgba(250,204,21,0.48),rgba(16,185,129,0.58),transparent)]" />
 
-        <div className="relative grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)] lg:items-start lg:gap-7 2xl:grid-cols-[320px_minmax(0,1fr)] 2xl:gap-8">
+        <div className="relative grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:items-start xl:gap-7 2xl:grid-cols-[320px_minmax(0,1fr)] 2xl:gap-8">
           <div className="min-w-0">
             <SectionHeading
               eyebrow="Live issue lifecycle"
@@ -2624,31 +2696,19 @@ function LiveIssueLifecycleSection() {
                 );
               })}
             </div>
-
-            <div className="mt-5 rounded-[22px] border border-white/10 bg-[#020813]/74 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-cyan-200">
-                <ToneDot tone="cyan" />
-                Scan to verified recovery
-              </div>
-              <div className="mt-3 grid gap-2 text-sm leading-6 text-white/54">
-                <div>Capture enters the queue with bay evidence and coverage.</div>
-                <div>ShelfLens detects gaps, escalates critical risk, then verifies the refill on the next scan.</div>
-              </div>
-            </div>
           </div>
 
           <div className="min-w-0">
             <div className="relative overflow-hidden rounded-[26px] border border-white/10 bg-[#020813]/78 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.045)] sm:p-4 lg:p-5">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(34,211,238,0.10),transparent_28%),radial-gradient(circle_at_72%_5%,rgba(250,204,21,0.10),transparent_26%),radial-gradient(circle_at_100%_28%,rgba(239,68,68,0.08),transparent_24%),radial-gradient(circle_at_92%_82%,rgba(74,222,128,0.10),transparent_28%)]" />
               <div className="relative">
-                <LifecycleProgressRail shouldReduceMotion={shouldReduceMotion} />
+                <div className="hidden sm:block">
+                  <LifecycleProgressRail shouldReduceMotion={shouldReduceMotion} />
+                </div>
 
                 <div className="relative mt-6">
-                  <div className="absolute bottom-4 left-5 top-5 w-px bg-[linear-gradient(180deg,rgba(34,211,238,0),rgba(34,211,238,0.45),rgba(248,113,113,0.38),rgba(74,222,128,0.48),rgba(74,222,128,0))] sm:hidden" />
-                  <div
-                    className="grid gap-3"
-                    style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 170px), 1fr))" }}
-                  >
+                  <LifecycleMobileProgressRail shouldReduceMotion={shouldReduceMotion} />
+                  <div className="relative z-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     {lifecycleSteps.map((step, index) => (
                       <LifecycleStepCard key={step.title} step={step} number={index + 1} isLast={index === lifecycleSteps.length - 1} />
                     ))}
@@ -3224,11 +3284,14 @@ export default function ShelfLensLandingPage() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:block">
-              <Button variant="ghost">Sign in</Button>
-            </div>
-            <Button className="h-11 px-4 text-xs sm:h-12 sm:px-7 sm:text-sm" onClick={openRequestAccess}>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <a
+              href={APP_SIGN_IN_URL}
+              className="group relative isolate inline-flex min-h-11 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025] px-3 py-2 text-xs font-semibold whitespace-nowrap text-white/74 transition-all duration-300 hover:border-cyan-300/20 hover:bg-white/[0.06] hover:text-white max-[420px]:px-2 max-[420px]:text-[11px] sm:min-h-[48px] sm:px-5 sm:py-3 sm:text-sm"
+            >
+              Sign in
+            </a>
+            <Button className="h-11 px-4 text-xs max-[420px]:px-3 max-[420px]:text-[11px] sm:h-12 sm:px-7 sm:text-sm" onClick={openRequestAccess}>
               Get early access
             </Button>
           </div>
