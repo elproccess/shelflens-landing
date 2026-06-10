@@ -529,6 +529,8 @@ const flowSequence = [0, 1, 2];
 const flowStepHoldMs = 1450;
 const flowTravelMs = 850;
 const flowManualHoldMs = 1800;
+const flowResetHideMs = 150;
+const flowResetShowMs = 80;
 
 function getNextFlowStep(current: number) {
   const currentIndex = flowSequence.indexOf(current);
@@ -540,6 +542,7 @@ function ExpectedFacingsFlow() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [energyStep, setEnergyStep] = React.useState(0);
   const [flowMode, setFlowMode] = React.useState<"auto" | "hover" | "hold">("auto");
+  const [isFlowResetting, setIsFlowResetting] = React.useState(false);
   const timerRef = React.useRef<number[]>([]);
   const manual = flowMode !== "auto";
 
@@ -559,6 +562,24 @@ function ExpectedFacingsFlow() {
 
     const moveTimer = window.setTimeout(() => {
       setFlowMode("auto");
+
+      if (activeStep === flowSequence[flowSequence.length - 1] && nextStep === flowSequence[0]) {
+        setIsFlowResetting(true);
+
+        const resetTimer = window.setTimeout(() => {
+          setEnergyStep(nextStep);
+          setActiveStep(nextStep);
+
+          window.setTimeout(() => {
+            setIsFlowResetting(false);
+          }, flowResetShowMs);
+        }, flowResetHideMs);
+
+        timerRef.current.push(resetTimer);
+        return;
+      }
+
+      setIsFlowResetting(false);
       setEnergyStep(nextStep);
 
       const arrivalTimer = window.setTimeout(() => {
@@ -577,6 +598,7 @@ function ExpectedFacingsFlow() {
 
   const activateStep = (id: number, mode: "hover" | "hold") => {
     clearFlowTimer();
+    setIsFlowResetting(false);
     setFlowMode(mode);
     setEnergyStep(id);
     setActiveStep(id);
@@ -612,6 +634,7 @@ function ExpectedFacingsFlow() {
           data-active-step={activeStep}
           data-energy-step={energyStep}
           data-manual={manual ? "true" : "false"}
+          data-resetting={isFlowResetting ? "true" : "false"}
         >
           <div className="sl-flow-rail pointer-events-none absolute" aria-hidden="true">
             <div className="sl-flow-rail-line" />
@@ -657,6 +680,198 @@ function ExpectedFacingsFlow() {
             })}
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+
+const beforeLimitations = ["Manual checks", "Missed gaps", "Slow response"] as const;
+const afterWins = ["Live issue detection", "Expected-facing alerts", "Prioritised actions"] as const;
+
+function BeforeAfterShelfLensSection() {
+  const reduceMotion = Boolean(useReducedMotion());
+
+  return (
+    <section className="sl-ba-section relative isolate overflow-hidden bg-[#050b15] px-4 py-20 text-white sm:px-7 sm:py-24 lg:px-9 xl:px-12">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_44%,rgba(34,211,238,0.13),transparent_34%),radial-gradient(circle_at_78%_62%,rgba(16,185,129,0.08),transparent_30%),linear-gradient(180deg,#050b15_0%,#030916_100%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.08] [background-image:radial-gradient(circle,rgba(255,255,255,0.52)_0.7px,transparent_0.8px)] [background-size:6px_6px]" />
+
+      <div className="relative mx-auto max-w-[1480px]">
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-90px" }}
+          transition={{ duration: reduceMotion ? 0 : 0.62 }}
+          className="sl-ba-intro mx-auto max-w-[1260px] text-center"
+        >
+          <div className="sl-ba-eyebrow mx-auto inline-flex items-center gap-2 rounded-full border border-cyan-300/18 bg-cyan-300/[0.045] px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-200">
+            <Icon className="h-3.5 w-3.5">
+              <circle cx="8" cy="12" r="4.5" />
+              <circle cx="16" cy="12" r="4.5" />
+              <path d="M12 7.5v9" />
+            </Icon>
+            BEFORE & AFTER
+          </div>
+          <h2 className="mt-5 text-4xl font-black text-white sm:text-5xl lg:text-6xl">
+            From blind spots to{" "}
+            <span className="bg-[linear-gradient(100deg,#22d3ee_0%,#2dd4bf_58%,#67e8f9_100%)] bg-clip-text text-transparent">
+              shelf visibility.
+            </span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-[730px] text-base leading-8 text-white/58 sm:text-lg">
+            Compare how teams operate before ShelfLens and how quickly they can detect, prioritise and resolve shelf issues after using ShelfLens.
+          </p>
+        </motion.div>
+
+        <div className="sl-ba-comparison relative mt-7 lg:mt-8">
+          <motion.article
+            initial={reduceMotion ? false : { opacity: 0, x: -26 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-90px" }}
+            transition={{ duration: reduceMotion ? 0 : 0.68, delay: reduceMotion ? 0 : 0.04 }}
+            className="sl-ba-card sl-ba-card-before"
+          >
+            <div className="sl-ba-card-header">
+              <span className="sl-ba-before-icon" aria-hidden="true">
+                <Icon className="h-7 w-7">
+                  <path d="M3 12s3.2-5.5 9-5.5S21 12 21 12s-3.2 5.5-9 5.5S3 12 3 12Z" />
+                  <circle cx="12" cy="12" r="2.8" />
+                  <path d="m4 20 16-16" />
+                </Icon>
+              </span>
+              <div>
+                <h3>Before ShelfLens</h3>
+                <p>Limited visibility. Reactive. Time consuming.</p>
+              </div>
+            </div>
+
+            <div className="sl-ba-before-image-wrap">
+              <img
+                src="/shelflens-cereal-aisle.png"
+                alt="Retail cereal shelf with visible gaps before ShelfLens visibility is applied."
+                className="sl-ba-before-image"
+              />
+            </div>
+
+            <div className="sl-ba-before-lower">
+              <div className="sl-ba-limitations">
+                {beforeLimitations.map((item) => (
+                  <div key={item} className="sl-ba-limitation">
+                    <span aria-hidden="true">
+                      <Icon className="h-3.5 w-3.5">
+                        <path d="M8 8h8v8H8z" />
+                        <path d="m7 17 10-10" />
+                      </Icon>
+                    </span>
+                    {item}
+                  </div>
+                ))}
+              </div>
+              <div className="sl-ba-before-metric">
+                <span>Issue visibility</span>
+                <strong>Low</strong>
+                <div className="sl-ba-low-bars" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                  <i />
+                </div>
+              </div>
+            </div>
+          </motion.article>
+
+          <div className="sl-ba-transform-arrow" aria-hidden="true">
+            <Icons.Arrow className="h-6 w-6" />
+          </div>
+
+          <motion.article
+            initial={reduceMotion ? false : { opacity: 0, x: 26 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-90px" }}
+            transition={{ duration: reduceMotion ? 0 : 0.68, delay: reduceMotion ? 0 : 0.18 }}
+            className="sl-ba-card sl-ba-card-after"
+          >
+            <div className="sl-ba-card-header sl-ba-after-header">
+              <span className="sl-ba-after-icon" aria-hidden="true">
+                <Icons.Scan className="h-7 w-7" />
+              </span>
+              <div className="sl-ba-after-copy">
+                <h3>After ShelfLens</h3>
+                <p>Real-time visibility. Proactive. Actionable.</p>
+              </div>
+              <div className="sl-ba-success-pill">
+                <Icons.Check className="h-3.5 w-3.5" />
+                92% Store compliance
+              </div>
+            </div>
+
+            <div className="sl-ba-after-content">
+              <div className="sl-ba-inspect-mockup">
+                <img
+                  src="/shelflens-expected-facing.png"
+                  alt="ShelfLens Inspect screen showing expected-facing shelf zones and status."
+                  className="sl-ba-inspect-image"
+                />
+                <div className="sl-ba-inspect-status" aria-hidden="true">
+                  <span>Expected facings</span>
+                  <strong>12 / 12</strong>
+                  <i />
+                </div>
+              </div>
+
+              <div className="sl-ba-after-side">
+                <div className="sl-ba-after-list">
+                  {afterWins.map((item) => (
+                    <div key={item} className="sl-ba-after-win">
+                      <span aria-hidden="true">
+                        <Icons.Check className="h-4 w-4" />
+                      </span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="sl-ba-after-metrics">
+                  <div className="sl-ba-after-metric">
+                    <span>Issue visibility</span>
+                    <strong>High</strong>
+                    <div className="sl-ba-rise-bars" aria-hidden="true">
+                      <i />
+                      <i />
+                      <i />
+                    </div>
+                  </div>
+                  <div className="sl-ba-after-metric">
+                    <span>Action time</span>
+                    <strong>Faster</strong>
+                    <Icon className="sl-ba-lightning">
+                      <path d="M13 2 5 14h6l-1 8 9-13h-6l1-7Z" />
+                    </Icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.article>
+        </div>
+
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-90px" }}
+          transition={{ duration: reduceMotion ? 0 : 0.58, delay: reduceMotion ? 0 : 0.28 }}
+          className="sl-ba-summary-wrap"
+        >
+          <div className="sl-ba-connector sl-ba-connector-left" aria-hidden="true" />
+          <div className="sl-ba-connector sl-ba-connector-right" aria-hidden="true" />
+          <div className="sl-ba-summary-pill">
+            <Icon className="h-4 w-4">
+              <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3Z" />
+              <path d="M19 14l.7 2.1L22 17l-2.3.9L19 20l-.7-2.1L16 17l2.3-.9L19 14Z" />
+            </Icon>
+            Better visibility. Faster fixes. Better shelves.
+          </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -910,6 +1125,7 @@ function ShelfLensHeroStage() {
   const [hoveredZoneId, setHoveredZoneId] = React.useState<string | null>(null);
   const activeBay = heroBays[activeBayIndex];
   const activeCards = activeBay.cards;
+  const visibleCards = activeCards.filter((card) => card.id !== "ai-scan");
   const activeCard = activeCards.find((card) => card.id === activeId) ?? activeCards[5];
   const displayedZoneId = hoveredZoneId ?? selectedZoneId;
   const showBay = (direction: -1 | 1) => {
@@ -936,13 +1152,21 @@ function ShelfLensHeroStage() {
             <div className="hidden text-sm text-white/56 sm:block">Retail shelf intelligence</div>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={openRequestAccess}
-          className="rounded-2xl border border-cyan-100/25 bg-[linear-gradient(135deg,#6f55ff_0%,#3b82f6_46%,#20d5ef_100%)] px-4 py-3 text-xs font-black text-slate-950 shadow-[0_18px_48px_rgba(34,211,238,0.26),inset_0_1px_0_rgba(255,255,255,0.4)] transition hover:-translate-y-0.5 sm:px-5 sm:text-sm"
-        >
-          Request pilot
-        </button>
+        <div className="sl-opus-actions flex items-center gap-2 sm:gap-3">
+          <a
+            href="https://app.shelflens.co.uk"
+            className="sl-opus-sign-in inline-flex min-h-11 items-center justify-center rounded-2xl border border-white/12 bg-white/[0.035] px-3 py-2 text-xs font-bold text-white/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.055)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-cyan-300/24 hover:bg-white/[0.065] hover:text-white sm:px-5 sm:text-sm"
+          >
+            Sign in
+          </a>
+          <button
+            type="button"
+            onClick={openRequestAccess}
+            className="rounded-2xl border border-cyan-100/25 bg-[linear-gradient(135deg,#6f55ff_0%,#3b82f6_46%,#20d5ef_100%)] px-4 py-3 text-xs font-black text-slate-950 shadow-[0_18px_48px_rgba(34,211,238,0.26),inset_0_1px_0_rgba(255,255,255,0.4)] transition hover:-translate-y-0.5 sm:px-5 sm:text-sm"
+          >
+            Request pilot
+          </button>
+        </div>
       </header>
 
       <div className="sl-opus-grid mx-auto grid max-w-[1480px] items-center pt-6 sm:pt-8">
@@ -1017,7 +1241,7 @@ function ShelfLensHeroStage() {
         <div className="sl-opus-stage relative mx-auto w-full overflow-visible">
           {!reduceMotion && <div className="sl-opus-orbit pointer-events-none absolute inset-[-6%] rounded-[50px]" />}
 
-          {activeCards.map((card) => (
+          {visibleCards.map((card) => (
             <FloatingCard
               key={card.id}
               card={card}
@@ -1025,6 +1249,33 @@ function ShelfLensHeroStage() {
               onActivate={() => setActiveId(card.id)}
             />
           ))}
+
+          <motion.div
+            key={activeCard.id}
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.22 }}
+            className="sl-opus-status pointer-events-none rounded-[22px] border border-white/12 bg-[#06101b]/91 p-4 backdrop-blur-2xl"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="truncate text-sm font-black text-white">{activeCard.title}</div>
+                <div className="mt-1 truncate text-xs text-white/48">
+                  {activeCard.subtitle}
+                </div>
+              </div>
+              <div
+                className={cn(
+                  "shrink-0 rounded-full border px-3 py-1 text-xs font-black",
+                  activeCard.tone === "red" && "border-red-400/28 bg-red-500/[0.12] text-red-100",
+                  activeCard.tone === "green" && "border-emerald-300/24 bg-emerald-400/[0.10] text-emerald-100",
+                  activeCard.tone === "cyan" && "border-cyan-300/24 bg-cyan-300/[0.09] text-cyan-100",
+                )}
+              >
+                {activeCard.pill}
+              </div>
+            </div>
+          </motion.div>
 
           <button
             type="button"
@@ -1118,32 +1369,6 @@ function ShelfLensHeroStage() {
                 ))}
               </motion.svg>
 
-              <motion.div
-                key={activeCard.id}
-                initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: reduceMotion ? 0 : 0.22 }}
-                className="sl-opus-status pointer-events-none absolute inset-x-4 bottom-4 rounded-[22px] border border-white/12 bg-[#06101b]/89 p-4 backdrop-blur-2xl"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-black text-white">{activeCard.title}</div>
-                    <div className="mt-1 truncate text-xs text-white/48">
-                      {activeCard.subtitle}
-                    </div>
-                  </div>
-                  <div
-                    className={cn(
-                      "shrink-0 rounded-full border px-3 py-1 text-xs font-black",
-                      activeCard.tone === "red" && "border-red-400/28 bg-red-500/[0.12] text-red-100",
-                      activeCard.tone === "green" && "border-emerald-300/24 bg-emerald-400/[0.10] text-emerald-100",
-                      activeCard.tone === "cyan" && "border-cyan-300/24 bg-cyan-300/[0.09] text-cyan-100",
-                    )}
-                  >
-                    {activeCard.pill}
-                  </div>
-                </div>
-              </motion.div>
             </div>
 
             <div className="sl-opus-expected-panel" role="group" aria-label="Expected facing zone selection">
@@ -1501,6 +1726,7 @@ export default function ShelfLensLandingPage() {
     <div className="sl-landing-root">
       <ShelfLensHeroStage />
       <ExpectedFacingsFlow />
+      <BeforeAfterShelfLensSection />
       <ProductPreviewSection />
       <RequestAccessModal />
     </div>
