@@ -120,10 +120,151 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    @apply scroll-smooth font-sans;
+  }
+
   body {
     @apply bg-background text-foreground;
+    min-width: 320px;
   }
-  html {
-    @apply font-sans;
+
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@keyframes sl-zone-stage {
+  0%,
+  8% {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  16%,
+  84% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  94%,
+  100% {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+
+@keyframes sl-badge-stage {
+  0%,
+  24% {
+    opacity: 0;
+    transform: translateY(5px) scale(0.96);
+  }
+  32%,
+  84% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  94%,
+  100% {
+    opacity: 0;
+    transform: translateY(5px) scale(0.96);
+  }
+}
+
+@keyframes sl-missing-stage {
+  0%,
+  43% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(248, 113, 113, 0.38);
+  }
+  57% {
+    opacity: 0.72;
+    transform: scale(1.02);
+    box-shadow: 0 0 42px rgba(248, 113, 113, 0.58);
+  }
+  64%,
+  84% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 26px rgba(248, 113, 113, 0.42);
+  }
+  94%,
+  100% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes sl-critical-stage {
+  0%,
+  61% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.96);
+  }
+  69%,
+  84% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  94%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.96);
+  }
+}
+
+.sl-stage-zone {
+  opacity: 0;
+  transform-origin: center;
+  animation: sl-zone-stage 10s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.sl-stage-badge {
+  opacity: 0;
+  animation: sl-badge-stage 10s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.sl-stage-missing {
+  opacity: 0;
+  transform-origin: center;
+  animation: sl-missing-stage 10s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.sl-stage-critical {
+  opacity: 0;
+  animation: sl-critical-stage 10s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.sl-delay-1 {
+  animation-delay: 0.35s;
+}
+.sl-delay-2 {
+  animation-delay: 0.55s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .sl-stage-zone,
+  .sl-stage-badge,
+  .sl-stage-missing,
+  .sl-stage-critical {
+    opacity: 1;
   }
 }
