@@ -3,6 +3,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import { motion, useReducedMotion } from "framer-motion";
+import Link from "next/link";
 import "./shelflens-landing.css";
 
 function cn(...classes: Array<string | false | null | undefined>) {
@@ -305,6 +306,110 @@ const cerealCards: HeroCard[] = [
   },
 ];
 
+const jarCardOverrides: Record<string, Partial<HeroCard>> = {
+  overview: {
+    subtitle: "MODERATE - 83.4%",
+    pill: "Moderate",
+    status: "Moderate",
+    value: "83.4%",
+    detail: "MODERATE - 83.4%",
+  },
+  "ai-scan": {
+    subtitle: "Detecting jar shelf gaps",
+    detail: "Detecting jar shelf gaps",
+  },
+  coverage: {
+    subtitle: "10 / 12 facings",
+    pill: "83% covered",
+    value: "83.4%",
+    detail: "Two shelf zones tracked",
+  },
+  health: {
+    subtitle: "MODERATE - 83.4%",
+    pill: "83% health",
+    value: "83.4%",
+    detail: "MODERATE - 83.4%",
+  },
+  "critical-shelf": {
+    subtitle: "Shelf 3 - Bay 1",
+    pill: "2 gap zones",
+    tone: "red",
+    label: "Shelf 3 - Bay 1",
+    value: "2",
+    detail: "Two shelf gaps",
+    graphic: "alert",
+  },
+  "critical-bays": {
+    subtitle: "One bay requires action",
+    pill: "1 priority",
+    tone: "red",
+    value: "1",
+    detail: "One bay requires action",
+    graphic: "alert",
+  },
+  expected: {
+    pill: "10 / 12 stocked",
+    value: "10 / 12",
+    detail: "Facings stocked",
+  },
+};
+
+const detergentCardOverrides: Record<string, Partial<HeroCard>> = {
+  overview: {
+    subtitle: "CRITICAL - 41.7%",
+    pill: "Critical",
+    tone: "red",
+    status: "Critical",
+    value: "41.7%",
+    detail: "CRITICAL - 41.7%",
+  },
+  "ai-scan": {
+    subtitle: "Detecting detergent shelf gaps",
+    detail: "Detecting detergent shelf gaps",
+  },
+  coverage: {
+    subtitle: "Large gap detected",
+    pill: "42% covered",
+    tone: "red",
+    value: "41.7%",
+    detail: "Middle shelf gap",
+  },
+  health: {
+    subtitle: "CRITICAL - 41.7%",
+    pill: "42% health",
+    tone: "red",
+    value: "41.7%",
+    detail: "CRITICAL - 41.7%",
+  },
+  "critical-shelf": {
+    subtitle: "Shelf 1 - Bay 2",
+    pill: "Large gap",
+    tone: "red",
+    label: "Shelf 1 - Bay 2",
+    value: "1",
+    detail: "Large middle shelf gap",
+    graphic: "alert",
+  },
+  "critical-bays": {
+    subtitle: "One bay requires action",
+    pill: "1 priority",
+    tone: "red",
+    value: "1",
+    detail: "One bay requires action",
+    graphic: "alert",
+  },
+  expected: {
+    pill: "5 / 12 stocked",
+    tone: "red",
+    value: "5 / 12",
+    detail: "Facings stocked",
+    graphic: "alert",
+  },
+};
+
+const jarCards: HeroCard[] = cards.map((card) => ({ ...card, ...(jarCardOverrides[card.id] ?? {}) }));
+const detergentCards: HeroCard[] = cards.map((card) => ({ ...card, ...(detergentCardOverrides[card.id] ?? {}) }));
+
 const heroBays: HeroBay[] = [
   {
     id: "bistro",
@@ -353,6 +458,88 @@ const heroBays: HeroBay[] = [
       { id: "krave", label: "krave", points: "843,1210 1062,1210 1016,1475 813,1476" },
     ],
     cards: cerealCards,
+  },
+  {
+    id: "jar",
+    imageSrc: "/shelflens-jar.png",
+    imageAlt: "ShelfLens expected-facing Inspect mockup for a jar shelf with two tracked shelf zones.",
+    bayTitle: "Aisle 2 - Left - Bay 1",
+    shelfLabel: "Shelf 3",
+    statusLine: "MODERATE - 83.4%",
+    time: "12:47 PM",
+    viewBox: "0 0 1463 2276",
+    defaultZoneId: "jar-upper-1",
+    expected: {
+      stocked: "10 / 12",
+      missing: "2",
+      loaded: 12,
+    },
+    rows: [
+      { id: "jar-upper-1", zone: "Kotlin ketchup", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "jar-upper-2", zone: "Kotlin ketchup lagodny", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "jar-upper-3", zone: "Kotlin ketchup pikantny", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "jar-upper-4", zone: "Majora mayonnaise", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "jar-upper-gap", zone: "Bielecki shelf gap", expected: 1, facings: "0 / 1 zone stocked", missing: 1 },
+      { id: "jar-upper-6", zone: "Italian pesto jars", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "jar-lower-1", zone: "Moryn salatka", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "jar-lower-2", zone: "Moryn cucumber jars", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "jar-lower-4", zone: "Moryn salad mix", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "jar-lower-5", zone: "Moryn shelf gap", expected: 1, facings: "0 / 1 zone stocked", missing: 1 },
+      { id: "jar-lower-gap", zone: "Dawtona Daakus jars", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "jar-lower-6", zone: "Daakus pickle jars", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+    ],
+    zones: [
+      { id: "jar-upper-1", label: "Kotlin ketchup", points: "311,1145 405,1145 414,1325 329,1325" },
+      { id: "jar-upper-2", label: "Kotlin ketchup lagodny", points: "405,1145 553,1145 555,1325 414,1325" },
+      { id: "jar-upper-3", label: "Kotlin ketchup pikantny", points: "553,1145 666,1145 666,1325 555,1325" },
+      { id: "jar-upper-4", label: "Majora mayonnaise", points: "666,1145 782,1145 765,1325 666,1325" },
+      { id: "jar-upper-gap", label: "Bielecki shelf gap", points: "782,1145 1023,1145 996,1325 765,1325" },
+      { id: "jar-upper-6", label: "Italian pesto jars", points: "1023,1145 1159,1144 1117,1325 996,1325" },
+      { id: "jar-lower-1", label: "Moryn salatka", points: "347,1485 452,1485 450,1626 333,1626" },
+      { id: "jar-lower-2", label: "Moryn cucumber jars", points: "452,1485 598,1485 586,1626 450,1626" },
+      { id: "jar-lower-4", label: "Moryn salad mix", points: "598,1485 738,1486 714,1629 586,1626" },
+      { id: "jar-lower-5", label: "Moryn shelf gap", points: "738,1486 868,1486 851,1629 714,1629" },
+      { id: "jar-lower-gap", label: "Dawtona Daakus jars", points: "868,1486 985,1485 970,1626 851,1629" },
+      { id: "jar-lower-6", label: "Daakus pickle jars", points: "985,1485 1113,1485 1096,1626 970,1626" },
+    ],
+    cards: jarCards,
+  },
+  {
+    id: "detergent",
+    imageSrc: "/shelflens-detergent.png",
+    imageAlt: "ShelfLens expected-facing Inspect mockup for a detergent shelf with a large middle shelf gap.",
+    bayTitle: "Aisle 2 - Left - Bay 2",
+    shelfLabel: "Shelf 1",
+    statusLine: "CRITICAL - 41.7%",
+    time: "12:47 PM",
+    viewBox: "0 0 1463 2276",
+    defaultZoneId: "detergent-upper-1",
+    expected: {
+      stocked: "5 / 12",
+      missing: "7",
+      loaded: 8,
+    },
+    rows: [
+      { id: "detergent-upper-1", zone: "Lenor Outdoorable blue", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "detergent-upper-2", zone: "Lenor blue XL pack", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "detergent-upper-3", zone: "Lenor summer breeze", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "detergent-upper-4", zone: "Lenor pink Outdoorable", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "detergent-upper-gap", zone: "Lenor upper shelf gap", expected: 1, facings: "0 / 1 zone stocked", missing: 1 },
+      { id: "detergent-large-gap", zone: "Large Lenor gap", expected: 6, facings: "0 / 6 facings stocked", missing: 6 },
+      { id: "detergent-middle-2", zone: "Lenor scent boosters", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "detergent-middle-3", zone: "Lenor floral pack", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+    ],
+    zones: [
+      { id: "detergent-upper-1", label: "Lenor Outdoorable blue", points: "227,1102 444,1098 464,1408 279,1404" },
+      { id: "detergent-upper-2", label: "Lenor blue XL pack", points: "444,1098 622,1095 621,1408 464,1408" },
+      { id: "detergent-upper-3", label: "Lenor summer breeze", points: "622,1095 841,1093 826,1406 621,1408" },
+      { id: "detergent-upper-4", label: "Lenor pink Outdoorable", points: "841,1093 1032,1086 996,1404 826,1406" },
+      { id: "detergent-upper-gap", label: "Lenor upper shelf gap", points: "1032,1086 1280,1080 1216,1400 982,1404" },
+      { id: "detergent-large-gap", label: "Large Lenor gap", points: "268,1410 812,1406 827,1680 328,1688" },
+      { id: "detergent-middle-2", label: "Lenor scent boosters", points: "812,1406 990,1404 986,1678 827,1680" },
+      { id: "detergent-middle-3", label: "Lenor floral pack", points: "990,1404 1206,1398 1180,1676 990,1678" },
+    ],
+    cards: detergentCards,
   },
 ];
 
@@ -748,8 +935,8 @@ function BeforeAfterShelfLensSection() {
 
             <div className="sl-ba-before-image-wrap">
               <img
-                src="/shelflens-cereal-aisle.png"
-                alt="Retail cereal shelf with visible gaps before ShelfLens visibility is applied."
+                src="/before.jpg"
+                alt="Retail shelf before ShelfLens visibility is applied."
                 className="sl-ba-before-image"
               />
             </div>
@@ -809,8 +996,8 @@ function BeforeAfterShelfLensSection() {
             <div className="sl-ba-after-content">
               <div className="sl-ba-inspect-mockup">
                 <img
-                  src="/shelflens-expected-facing.png"
-                  alt="ShelfLens Inspect screen showing expected-facing shelf zones and status."
+                  src="/after.png"
+                  alt="ShelfLens after view showing shelf visibility and issue detection."
                   className="sl-ba-inspect-image"
                 />
                 <div className="sl-ba-inspect-status" aria-hidden="true">
@@ -1019,15 +1206,61 @@ function ProductPreviewSection() {
               ))}
           </div>
 
-          <div className="sl-preview-actions">
-            <button
-              type="button"
-              onClick={openRequestAccess}
-              className="group inline-flex min-h-12 w-full items-center justify-center rounded-2xl border border-cyan-100/25 bg-[linear-gradient(135deg,#6f55ff_0%,#3b82f6_46%,#20d5ef_100%)] px-6 py-3 text-sm font-black text-slate-950 shadow-[0_18px_48px_rgba(34,211,238,0.24),inset_0_1px_0_rgba(255,255,255,0.4)] transition hover:-translate-y-0.5 sm:w-auto"
-            >
-              Request pilot
-              <Icons.Arrow className="ml-3 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </button>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+function FinalPilotCtaSection() {
+  const reduceMotion = Boolean(useReducedMotion());
+
+  return (
+    <section className="sl-final-cta relative isolate overflow-hidden bg-[#020713] px-4 py-20 text-white sm:px-7 sm:py-24 lg:px-9 xl:px-12">
+      <motion.div
+        initial={reduceMotion ? false : { opacity: 0, y: 26 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-90px" }}
+        transition={{ duration: reduceMotion ? 0 : 0.72, ease: [0.22, 1, 0.36, 1] }}
+        className="sl-final-cta-shell relative z-10 mx-auto max-w-[1180px]"
+      >
+        <div className="sl-final-cta-card">
+          <div className="sl-final-cta-copy">
+            <div className="sl-final-cta-kicker">
+              <Icon className="h-4 w-4">
+                <path d="m13 2-9 12h7l-1 8 10-14h-7l0-6Z" />
+              </Icon>
+              Ready to see your shelves?
+            </div>
+
+            <h2 className="sl-final-cta-title">
+              What are your shelves missing <span>right now?</span>
+            </h2>
+
+            <p className="sl-final-cta-body">
+              Request a ShelfLens pilot and we will review your store workflow before setting up the right workspace for your team.
+            </p>
+
+            <div className="sl-final-cta-actions">
+              <button
+                type="button"
+                onClick={openRequestAccess}
+                className="sl-final-cta-primary group"
+              >
+                Request pilot
+                <Icons.Arrow className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </button>
+
+              <a href="#demo" className="sl-final-cta-secondary">
+                View product walkthrough
+              </a>
+            </div>
+
+            <div className="sl-final-cta-points" aria-label="ShelfLens pilot details">
+              <span>Web dashboard</span>
+              <span>Phone shelf view</span>
+              <span>Store-ready review</span>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -1143,15 +1376,9 @@ function ShelfLensHeroStage() {
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.10] [background-image:radial-gradient(circle,rgba(255,255,255,0.55)_0.7px,transparent_0.8px)] [background-size:5px_5px]" />
 
       <header className="sl-opus-header mx-auto flex max-w-[1480px] items-center justify-between py-4 sm:py-5">
-        <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-[17px] border border-cyan-300/40 bg-cyan-300/[0.055] text-cyan-300 shadow-[0_0_28px_rgba(34,211,238,0.14)]">
-            <Icons.Store className="h-5 w-5" />
-          </span>
-          <div>
-            <div className="text-sm font-black uppercase tracking-[0.12em]">ShelfLens</div>
-            <div className="hidden text-sm text-white/56 sm:block">Retail shelf intelligence</div>
-          </div>
-        </div>
+        <Link href="/" className="sl-opus-brand" aria-label="ShelfLens home">
+          <span className="sl-opus-brand-logo" role="img" aria-label="ShelfLens logo" />
+        </Link>
         <div className="sl-opus-actions flex items-center gap-2 sm:gap-3">
           <a
             href="https://app.shelflens.co.uk"
@@ -1239,8 +1466,6 @@ function ShelfLensHeroStage() {
         </div>
 
         <div className="sl-opus-stage relative mx-auto w-full overflow-visible">
-          {!reduceMotion && <div className="sl-opus-orbit pointer-events-none absolute inset-[-6%] rounded-[50px]" />}
-
           {visibleCards.map((card) => (
             <FloatingCard
               key={card.id}
@@ -1351,6 +1576,9 @@ function ShelfLensHeroStage() {
                     onBlur={() => setHoveredZoneId(null)}
                     onMouseEnter={() => setHoveredZoneId(zone.id)}
                     onMouseLeave={() => setHoveredZoneId(null)}
+                    onPointerEnter={() => setHoveredZoneId(zone.id)}
+                    onPointerMove={() => setHoveredZoneId(zone.id)}
+                    onPointerLeave={() => setHoveredZoneId(null)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
@@ -1408,10 +1636,15 @@ function ShelfLensHeroStage() {
                       onBlur={() => setHoveredZoneId(null)}
                       onMouseEnter={() => setHoveredZoneId(row.id)}
                       onMouseLeave={() => setHoveredZoneId(null)}
+                      onPointerEnter={() => setHoveredZoneId(row.id)}
+                      onPointerMove={() => setHoveredZoneId(row.id)}
+                      onPointerLeave={() => setHoveredZoneId(null)}
                     >
                       <div className="sl-opus-expected-row-head">
                         <span>{row.zone}</span>
-                        <span className="sl-opus-expected-stocked">Stocked</span>
+                        <span className={cn("sl-opus-expected-stocked", row.missing > 0 && "is-missing")}>
+                          {row.missing > 0 ? "Gap" : "Stocked"}
+                        </span>
                       </div>
                       <div className="sl-opus-expected-row-meta">
                         <span>Expected {row.expected}</span>
@@ -1728,6 +1961,7 @@ export default function ShelfLensLandingPage() {
       <ExpectedFacingsFlow />
       <BeforeAfterShelfLensSection />
       <ProductPreviewSection />
+      <FinalPilotCtaSection />
       <RequestAccessModal />
     </div>
   );

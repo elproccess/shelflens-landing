@@ -1,0 +1,13 @@
+
+> shelflens-landing@0.1.0 dev
+> next dev --hostname 127.0.0.1 --port 3025
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://127.0.0.1:3025
+- Network:       http://127.0.0.1:3025
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 6.2s
+○ Compiling / ...
+ HEAD / 200 in 311ms (compile: 41ms, render: 270ms)

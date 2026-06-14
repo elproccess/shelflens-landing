@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+ viewBox="0 0 1536 1024" role="img">
+<title>ShelfLens logo — generated design match</title>
+<defs>
+  <radialGradient id="centreGlow" cx="50%" cy="49%" r="43%">
+    <stop offset="0%" stop-color="#F5F7F7" stop-opacity="0.95"/>
+    <stop offset="18%" stop-color="#D8DDDE" stop-opacity="0.72"/>
+    <stop offset="45%" stop-color="#566067" stop-opacity="0.35"/>
+    <stop offset="100%" stop-color="#080A0C" stop-opacity="1"/>
+  </radialGradient>
+  <radialGradient id="cyanGlow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#62C9F3" stop-opacity="0.30"/>
+    <stop offset="100%" stop-color="#62C9F3" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="softBlur"><feGaussianBlur stdDeviation="42"/></filter>
+</defs>
+<rect width="1536" height="1024" fill="#080A0C"/>
+<rect width="1536" height="1024" fill="url(#centreGlow)"/>
+<ellipse cx="455" cy="480" rx="190" ry="175" fill="url(#cyanGlow)"
+ filter="url(#softBlur)"/>
+<ellipse cx="1080" cy="480" rx="190" ry="175" fill="url(#cyanGlow)"
+ filter="url(#softBlur)"/>
+<g aria-label="ShelfLens logo">
+  <g fill="#F7F8F8" stroke="#46545D" stroke-width="1.25" stroke-linejoin="round">
+    <path d="M 472 468 L 469 475 L 469 480 L 470 481 L 470 484 L 473 489 L 482 494 L 486 494 L 487 495 L 499 495 L 500 496 L 503 496 L 504 495 L 505 496 L 513 496 L 514 497 L 516 497 L 519 500 L 519 506 L 516 509 L 514 509 L 513 510 L 470 510 L 470 519 L 517 519 L 518 518 L 522 518 L 523 517 L 527 516 L 532 511 L 533 507 L 534 506 L 534 499 L 531 492 L 528 489 L 522 486 L 517 486 L 516 485 L 492 484 L 491 483 L 488 483 L 484 480 L 484 474 L 488 471 L 529 471 L 529 461 L 485 461 L 484 462 L 478 463 Z"/>
+<path d="M 545 461 L 545 519 L 558 519 L 558 497 L 559 496 L 587 496 L 588 497 L 588 519 L 601 519 L 601 461 L 588 461 L 588 484 L 587 485 L 568 485 L 567 486 L 565 485 L 559 485 L 558 484 L 558 463 L 559 461 Z"/>
+<path d="M 616 461 L 615 462 L 615 519 L 664 519 L 665 518 L 665 510 L 630 510 L 629 509 L 629 498 L 628 497 L 629 496 L 661 496 L 661 486 L 660 485 L 631 485 L 630 486 L 629 485 L 629 472 L 630 471 L 665 471 L 665 461 Z"/>
+<path d="M 677 461 L 677 519 L 722 519 L 722 510 L 692 510 L 691 509 L 691 505 L 690 504 L 690 495 L 691 494 L 690 493 L 691 492 L 690 490 L 690 485 L 691 484 L 690 483 L 691 481 L 690 479 L 690 476 L 691 475 L 691 472 L 690 471 L 690 462 L 691 461 Z"/>
+<path d="M 783 461 L 733 461 L 733 519 L 747 519 L 747 497 L 748 496 L 778 496 L 778 486 L 748 486 L 747 485 L 747 472 L 748 471 L 783 471 Z"/>
+<path d="M 794 461 L 794 519 L 839 519 L 839 510 L 808 510 L 807 509 L 808 507 L 808 462 L 807 461 Z"/>
+<path d="M 850 461 L 850 519 L 901 519 L 901 510 L 864 510 L 863 509 L 864 508 L 864 498 L 863 497 L 865 495 L 867 496 L 896 496 L 896 485 L 865 485 L 864 484 L 864 472 L 865 471 L 900 471 L 900 461 Z"/>
+<path d="M 913 461 L 913 519 L 926 519 L 926 481 L 927 480 L 928 480 L 930 482 L 930 483 L 935 488 L 935 489 L 939 493 L 939 494 L 946 502 L 946 503 L 960 519 L 975 519 L 975 461 L 962 461 L 962 499 L 961 500 L 955 494 L 955 493 L 942 478 L 942 477 L 929 462 L 929 461 Z"/>
+<path d="M 992 466 L 992 467 L 989 470 L 989 472 L 988 473 L 988 483 L 990 487 L 994 491 L 998 493 L 1000 493 L 1001 494 L 1005 494 L 1006 495 L 1030 496 L 1036 499 L 1037 501 L 1037 504 L 1036 506 L 1031 510 L 988 510 L 988 519 L 1035 519 L 1036 518 L 1040 518 L 1046 515 L 1049 512 L 1051 508 L 1051 497 L 1048 491 L 1046 489 L 1040 486 L 1037 486 L 1036 485 L 1027 485 L 1026 484 L 1010 484 L 1009 483 L 1006 483 L 1002 479 L 1002 475 L 1007 471 L 1047 471 L 1047 461 L 1003 461 L 1002 462 L 999 462 Z"/>
+  </g>
+  <g fill="none" stroke="#304550" stroke-width="8"
+     stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M 435 438 V 394 H 499"/>
+<path d="M 1037 394 H 1102 V 438"/>
+<path d="M 435 532 V 576 H 500"/>
+<path d="M 1037 576 H 1102 V 532"/>
+  </g>
+  <g fill="none" stroke="#70C9EE" stroke-width="4.5"
+     stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M 435 438 V 394 H 499"/>
+<path d="M 1037 394 H 1102 V 438"/>
+<path d="M 435 532 V 576 H 500"/>
+<path d="M 1037 576 H 1102 V 532"/>
+  </g>
+</g>
+</svg>
