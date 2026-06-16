@@ -23,12 +23,21 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
+        url: "/favicon.ico",
+        type: "image/x-icon",
+      },
+      {
+        url: "/favicon.png",
+        type: "image/png",
+        sizes: "512x512",
+      },
+      {
         url: "/shelflens-exact-logo-pack/shelflens-tab-icon-transparent.png",
         type: "image/png",
         sizes: "512x512",
       },
     ],
-    shortcut: "/shelflens-exact-logo-pack/shelflens-tab-icon-transparent.png",
+    shortcut: "/favicon.ico",
     apple: "/shelflens-exact-logo-pack/shelflens-tab-icon-transparent.png",
   },
   openGraph: {

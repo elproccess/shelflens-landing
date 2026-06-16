@@ -64,7 +64,7 @@ const Icons = {
   ),
 };
 
-type Tone = "cyan" | "green" | "red";
+type Tone = "cyan" | "green" | "orange" | "red";
 type HeroCardGraphic = "bars" | "scan" | "check" | "trend" | "alert";
 type HeroCard = {
   id: string;
@@ -78,6 +78,27 @@ type HeroCard = {
   detail: string;
   graphic: HeroCardGraphic;
   className: string;
+};
+
+type ExpectedFacingRow = {
+  id: string;
+  zone: string;
+  expected: number;
+  facings: string;
+  missing: number;
+  status?: "stocked" | "empty" | "underfilled";
+};
+
+type HeroZone = {
+  id: string;
+  label: string;
+  points: string;
+};
+
+type ExpectedShelf = {
+  id: string;
+  label: string;
+  zoneIds: ReadonlyArray<string>;
 };
 
 const cards: HeroCard[] = [
@@ -97,11 +118,11 @@ const cards: HeroCard[] = [
   {
     id: "ai-scan",
     title: "AI Scan Active",
-    subtitle: "Detecting gaps & compliance issues",
+    subtitle: "Detecting empty zones & compliance issues",
     pill: "Scanning",
     tone: "cyan",
     label: "AI Scan Active",
-    detail: "Detecting gaps & compliance issues",
+    detail: "Detecting empty zones & compliance issues",
     graphic: "scan",
     className: "sl-card-ai",
   },
@@ -204,18 +225,9 @@ type HeroBay = {
     missing: string;
     loaded: number;
   };
-  rows: ReadonlyArray<{
-    id: string;
-    zone: string;
-    expected: number;
-    facings: string;
-    missing: number;
-  }>;
-  zones: ReadonlyArray<{
-    id: string;
-    label: string;
-    points: string;
-  }>;
+  rows: ReadonlyArray<ExpectedFacingRow>;
+  zones: ReadonlyArray<HeroZone>;
+  shelves?: ReadonlyArray<ExpectedShelf>;
   cards: HeroCard[];
 };
 
@@ -315,8 +327,8 @@ const jarCardOverrides: Record<string, Partial<HeroCard>> = {
     detail: "MODERATE - 83.4%",
   },
   "ai-scan": {
-    subtitle: "Detecting jar shelf gaps",
-    detail: "Detecting jar shelf gaps",
+    subtitle: "Detecting jar empty zones",
+    detail: "Detecting jar empty zones",
   },
   coverage: {
     subtitle: "10 / 12 facings",
@@ -332,11 +344,11 @@ const jarCardOverrides: Record<string, Partial<HeroCard>> = {
   },
   "critical-shelf": {
     subtitle: "Shelf 3 - Bay 1",
-    pill: "2 gap zones",
+    pill: "2 issue zones",
     tone: "red",
     label: "Shelf 3 - Bay 1",
     value: "2",
-    detail: "Two shelf gaps",
+    detail: "Two shelf issues",
     graphic: "alert",
   },
   "critical-bays": {
@@ -364,15 +376,15 @@ const detergentCardOverrides: Record<string, Partial<HeroCard>> = {
     detail: "CRITICAL - 41.7%",
   },
   "ai-scan": {
-    subtitle: "Detecting detergent shelf gaps",
-    detail: "Detecting detergent shelf gaps",
+    subtitle: "Detecting detergent empty zones",
+    detail: "Detecting detergent empty zones",
   },
   coverage: {
-    subtitle: "Large gap detected",
+    subtitle: "Large empty zone detected",
     pill: "42% covered",
     tone: "red",
     value: "41.7%",
-    detail: "Middle shelf gap",
+    detail: "Middle shelf empty",
   },
   health: {
     subtitle: "CRITICAL - 41.7%",
@@ -383,11 +395,11 @@ const detergentCardOverrides: Record<string, Partial<HeroCard>> = {
   },
   "critical-shelf": {
     subtitle: "Shelf 1 - Bay 2",
-    pill: "Large gap",
+    pill: "Empty zone",
     tone: "red",
     label: "Shelf 1 - Bay 2",
     value: "1",
-    detail: "Large middle shelf gap",
+    detail: "Large middle shelf empty",
     graphic: "alert",
   },
   "critical-bays": {
@@ -462,7 +474,7 @@ const heroBays: HeroBay[] = [
   {
     id: "jar",
     imageSrc: "/shelflens-jar.png",
-    imageAlt: "ShelfLens expected-facing Inspect mockup for a jar shelf with two tracked shelf zones.",
+    imageAlt: "ShelfLens expected-facing Inspect mockup for a jar shelf with tracked shelf issues.",
     bayTitle: "Aisle 2 - Left - Bay 1",
     shelfLabel: "Shelf 3",
     statusLine: "MODERATE - 83.4%",
@@ -475,30 +487,42 @@ const heroBays: HeroBay[] = [
       loaded: 12,
     },
     rows: [
-      { id: "jar-upper-1", zone: "Kotlin ketchup", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "jar-upper-2", zone: "Kotlin ketchup lagodny", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "jar-upper-3", zone: "Kotlin ketchup pikantny", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "jar-upper-4", zone: "Majora mayonnaise", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "jar-upper-gap", zone: "Bielecki shelf gap", expected: 1, facings: "0 / 1 zone stocked", missing: 1 },
-      { id: "jar-upper-6", zone: "Italian pesto jars", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "jar-lower-1", zone: "Moryn salatka", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "jar-lower-2", zone: "Moryn cucumber jars", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "jar-lower-4", zone: "Moryn salad mix", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "jar-lower-5", zone: "Moryn shelf gap", expected: 1, facings: "0 / 1 zone stocked", missing: 1 },
-      { id: "jar-lower-gap", zone: "Dawtona Daakus jars", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "jar-lower-6", zone: "Daakus pickle jars", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "jar-upper-1", zone: "Kotlin ketchup", expected: 1, facings: "1 / 1 front facing stocked", missing: 0 },
+      { id: "jar-upper-2", zone: "Kotlin ketchup lagodny", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "jar-upper-3", zone: "Kotlin ketchup pikantny", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "jar-upper-4", zone: "Majora mayonnaise", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "jar-upper-gap", zone: "Bielecki", expected: 4, facings: "3 / 4 front facings stocked", missing: 1, status: "underfilled" },
+      { id: "jar-upper-6", zone: "Italian pesto jars", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "jar-lower-1", zone: "Moryn salatka", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "jar-lower-2", zone: "Moryn cucumber jars", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "jar-lower-4", zone: "Moryn salad mix", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "jar-lower-5", zone: "Moryn", expected: 2, facings: "0 / 2 front facings stocked", missing: 2, status: "empty" },
+      { id: "jar-lower-gap", zone: "Dawtona Daakus jars", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "jar-lower-6", zone: "Daakus pickle jars", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+    ],
+    shelves: [
+      {
+        id: "jar-upper",
+        label: "Shelf 2",
+        zoneIds: ["jar-upper-1", "jar-upper-2", "jar-upper-3", "jar-upper-4", "jar-upper-gap", "jar-upper-6"],
+      },
+      {
+        id: "jar-lower",
+        label: "Shelf 4",
+        zoneIds: ["jar-lower-1", "jar-lower-2", "jar-lower-4", "jar-lower-5", "jar-lower-gap", "jar-lower-6"],
+      },
     ],
     zones: [
       { id: "jar-upper-1", label: "Kotlin ketchup", points: "311,1145 405,1145 414,1325 329,1325" },
       { id: "jar-upper-2", label: "Kotlin ketchup lagodny", points: "405,1145 553,1145 555,1325 414,1325" },
       { id: "jar-upper-3", label: "Kotlin ketchup pikantny", points: "553,1145 666,1145 666,1325 555,1325" },
       { id: "jar-upper-4", label: "Majora mayonnaise", points: "666,1145 782,1145 765,1325 666,1325" },
-      { id: "jar-upper-gap", label: "Bielecki shelf gap", points: "782,1145 1023,1145 996,1325 765,1325" },
+      { id: "jar-upper-gap", label: "Bielecki", points: "782,1145 1023,1145 996,1325 765,1325" },
       { id: "jar-upper-6", label: "Italian pesto jars", points: "1023,1145 1159,1144 1117,1325 996,1325" },
       { id: "jar-lower-1", label: "Moryn salatka", points: "347,1485 452,1485 450,1626 333,1626" },
       { id: "jar-lower-2", label: "Moryn cucumber jars", points: "452,1485 598,1485 586,1626 450,1626" },
       { id: "jar-lower-4", label: "Moryn salad mix", points: "598,1485 738,1486 714,1629 586,1626" },
-      { id: "jar-lower-5", label: "Moryn shelf gap", points: "738,1486 868,1486 851,1629 714,1629" },
+      { id: "jar-lower-5", label: "Moryn", points: "738,1486 868,1486 851,1629 714,1629" },
       { id: "jar-lower-gap", label: "Dawtona Daakus jars", points: "868,1486 985,1485 970,1626 851,1629" },
       { id: "jar-lower-6", label: "Daakus pickle jars", points: "985,1485 1113,1485 1096,1626 970,1626" },
     ],
@@ -507,7 +531,7 @@ const heroBays: HeroBay[] = [
   {
     id: "detergent",
     imageSrc: "/shelflens-detergent.png",
-    imageAlt: "ShelfLens expected-facing Inspect mockup for a detergent shelf with a large middle shelf gap.",
+    imageAlt: "ShelfLens expected-facing Inspect mockup for a detergent shelf with a large middle shelf empty zone.",
     bayTitle: "Aisle 2 - Left - Bay 2",
     shelfLabel: "Shelf 1",
     statusLine: "CRITICAL - 41.7%",
@@ -520,22 +544,40 @@ const heroBays: HeroBay[] = [
       loaded: 8,
     },
     rows: [
-      { id: "detergent-upper-1", zone: "Lenor Outdoorable blue", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "detergent-upper-2", zone: "Lenor blue XL pack", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "detergent-upper-3", zone: "Lenor summer breeze", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "detergent-upper-4", zone: "Lenor pink Outdoorable", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "detergent-upper-gap", zone: "Lenor upper shelf gap", expected: 1, facings: "0 / 1 zone stocked", missing: 1 },
-      { id: "detergent-large-gap", zone: "Large Lenor gap", expected: 6, facings: "0 / 6 facings stocked", missing: 6 },
-      { id: "detergent-middle-2", zone: "Lenor scent boosters", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
-      { id: "detergent-middle-3", zone: "Lenor floral pack", expected: 1, facings: "1 / 1 zone stocked", missing: 0 },
+      { id: "detergent-upper-1", zone: "Lenor Outdoorable blue", expected: 2, facings: "1 / 2 front facings stocked", missing: 1, status: "underfilled" },
+      { id: "detergent-upper-2", zone: "Lenor blue XL pack", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-upper-3", zone: "Lenor summer breeze", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-upper-4", zone: "Lenor pink Outdoorable", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-upper-gap", zone: "Lenor XL Outdoorable pink", expected: 2, facings: "1 / 2 front facings stocked", missing: 1, status: "underfilled" },
+      { id: "detergent-large-gap", zone: "Lenor middle shelf", expected: 6, facings: "0 / 6 front facings stocked", missing: 6, status: "empty" },
+      { id: "detergent-middle-2", zone: "Lenor scent boosters", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-middle-3", zone: "Lenor floral pack", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+    ],
+    shelves: [
+      {
+        id: "detergent-upper",
+        label: "Shelf 1",
+        zoneIds: [
+          "detergent-upper-1",
+          "detergent-upper-2",
+          "detergent-upper-3",
+          "detergent-upper-4",
+          "detergent-upper-gap",
+        ],
+      },
+      {
+        id: "detergent-middle",
+        label: "Shelf 2",
+        zoneIds: ["detergent-large-gap", "detergent-middle-2", "detergent-middle-3"],
+      },
     ],
     zones: [
       { id: "detergent-upper-1", label: "Lenor Outdoorable blue", points: "227,1102 444,1098 464,1408 279,1404" },
       { id: "detergent-upper-2", label: "Lenor blue XL pack", points: "444,1098 622,1095 621,1408 464,1408" },
       { id: "detergent-upper-3", label: "Lenor summer breeze", points: "622,1095 841,1093 826,1406 621,1408" },
       { id: "detergent-upper-4", label: "Lenor pink Outdoorable", points: "841,1093 1032,1086 996,1404 826,1406" },
-      { id: "detergent-upper-gap", label: "Lenor upper shelf gap", points: "1032,1086 1280,1080 1216,1400 982,1404" },
-      { id: "detergent-large-gap", label: "Large Lenor gap", points: "268,1410 812,1406 827,1680 328,1688" },
+      { id: "detergent-upper-gap", label: "Lenor XL Outdoorable pink", points: "1032,1086 1280,1080 1216,1400 982,1404" },
+      { id: "detergent-large-gap", label: "Lenor middle shelf", points: "268,1410 812,1406 827,1680 328,1688" },
       { id: "detergent-middle-2", label: "Lenor scent boosters", points: "812,1406 990,1404 986,1678 827,1680" },
       { id: "detergent-middle-3", label: "Lenor floral pack", points: "990,1404 1206,1398 1180,1676 990,1678" },
     ],
@@ -543,18 +585,255 @@ const heroBays: HeroBay[] = [
   },
 ];
 
+function getExpectedShelves(bay: HeroBay): ReadonlyArray<ExpectedShelf> {
+  if (bay.shelves?.length) return bay.shelves;
+
+  return [
+    {
+      id: `${bay.id}-shelf`,
+      label: bay.shelfLabel,
+      zoneIds: bay.rows.map((row) => row.id),
+    },
+  ];
+}
+
+function getExpectedShelfForZone(bay: HeroBay, zoneId: string) {
+  const shelves = getExpectedShelves(bay);
+  return shelves.find((shelf) => shelf.zoneIds.includes(zoneId)) ?? shelves[0];
+}
+
+function getExpectedRowsForShelf(bay: HeroBay, shelf: ExpectedShelf) {
+  const shelfZoneIds = new Set(shelf.zoneIds);
+  return bay.rows.filter((row) => shelfZoneIds.has(row.id));
+}
+
+function formatShelfPercentage(value: number) {
+  const rounded = Math.round(value * 10) / 10;
+  return Number.isInteger(rounded) ? `${rounded}%` : `${rounded.toFixed(1)}%`;
+}
+
+function getExpectedShelfSummary(rows: ReadonlyArray<ExpectedFacingRow>) {
+  const expected = rows.reduce((total, row) => total + row.expected, 0);
+  const missing = rows.reduce((total, row) => total + row.missing, 0);
+  const stocked = Math.max(expected - missing, 0);
+  const coverage = expected > 0 ? (stocked / expected) * 100 : 0;
+  const status = coverage >= 90 ? "OK" : coverage >= 75 ? "Moderate" : "Critical";
+  const tone: Tone = coverage >= 90 ? "green" : coverage >= 75 ? "cyan" : "red";
+
+  return {
+    stocked: `${stocked} / ${expected}`,
+    missing: String(missing),
+    loaded: rows.length,
+    expected,
+    stockedCount: stocked,
+    missingCount: missing,
+    coverage,
+    coverageLabel: formatShelfPercentage(coverage),
+    status,
+    tone,
+  };
+}
+
+function getExpectedRowStatus(row: ExpectedFacingRow) {
+  if (row.status) return row.status;
+  return row.missing > 0 ? "empty" : "stocked";
+}
+
+function getExpectedRowStatusLabel(row: ExpectedFacingRow) {
+  const status = getExpectedRowStatus(row);
+  if (status === "underfilled") return "Underfilled";
+  if (status === "empty") return "Empty";
+  return "Stocked";
+}
+
+function getExpectedRowTone(row: ExpectedFacingRow): Tone {
+  const status = getExpectedRowStatus(row);
+  if (status === "underfilled") return "orange";
+  if (status === "empty") return "red";
+  return "green";
+}
+
+function getExpectedRowIssueDetail(row: ExpectedFacingRow) {
+  const status = getExpectedRowStatus(row);
+  if (status === "underfilled") return "Underfilled zone";
+  if (status === "empty") return "Empty zone";
+  return "Zone clear";
+}
+
+function getShelfAwareCards(
+  bay: HeroBay,
+  shelf: ExpectedShelf,
+  rows: ReadonlyArray<ExpectedFacingRow>,
+  activeRow?: ExpectedFacingRow,
+) {
+  const summary = getExpectedShelfSummary(rows);
+  const baySummary = getExpectedShelfSummary(bay.rows);
+  const zoneRow = activeRow ?? rows[0];
+  const zoneStocked = zoneRow ? Math.max(zoneRow.expected - zoneRow.missing, 0) : summary.stockedCount;
+  const zoneExpected = zoneRow?.expected ?? summary.expected;
+  const zoneStatus = zoneRow ? getExpectedRowStatus(zoneRow) : "stocked";
+  const zoneTone = zoneRow ? getExpectedRowTone(zoneRow) : summary.tone;
+  const zoneStatusLabel = zoneRow ? getExpectedRowStatusLabel(zoneRow) : summary.status;
+  const zoneIssueDetail = zoneRow ? getExpectedRowIssueDetail(zoneRow) : "Shelf summary";
+  const zoneName = zoneRow?.zone ?? shelf.label;
+  const zoneFacings = zoneRow?.facings ?? `${summary.stocked} facings stocked`;
+  const zoneNeedsAction = zoneRow ? zoneRow.missing > 0 : summary.missingCount > 0;
+
+  const overrides: Record<string, Partial<HeroCard>> = {
+    "ai-scan": {
+      subtitle: `Checking ${zoneName}`,
+      detail: `Checking ${zoneName}`,
+    },
+    coverage: {
+      title: "Bay coverage",
+      subtitle: `${baySummary.stocked} facings`,
+      pill: `${baySummary.coverageLabel} covered`,
+      tone: baySummary.tone,
+      value: baySummary.coverageLabel,
+      detail: bay.bayTitle,
+    },
+    health: {
+      title: "Shelf health",
+      subtitle: `${shelf.label} - ${summary.status}`,
+      pill: `${summary.coverageLabel} health`,
+      tone: summary.tone,
+      value: summary.coverageLabel,
+      detail: `${summary.stocked} facings stocked`,
+    },
+    "critical-shelf": {
+      title: "Gap detection",
+      subtitle: zoneNeedsAction ? `${zoneName} - ${zoneIssueDetail}` : `${zoneName} clear`,
+      pill: zoneStatusLabel,
+      tone: zoneTone,
+      label: "Gap detection",
+      value: zoneNeedsAction ? (zoneStatus === "empty" ? "Empty" : "Low") : "Clear",
+      detail: zoneNeedsAction ? zoneName : "No gap detected",
+      graphic: zoneStatus === "stocked" ? "check" : "alert",
+    },
+    "critical-bays": {
+      title: "Zone action",
+      subtitle: zoneNeedsAction ? `${zoneName} needs restock` : `${zoneName} clear`,
+      pill: zoneNeedsAction ? zoneStatusLabel : "Clear",
+      tone: zoneTone,
+      label: "Zone action",
+      value: zoneNeedsAction ? "1" : "0",
+      detail: zoneIssueDetail,
+      graphic: zoneNeedsAction ? "alert" : "check",
+    },
+    expected: {
+      subtitle: zoneName,
+      pill: `${zoneStocked} / ${zoneExpected} stocked`,
+      tone: zoneTone,
+      value: `${zoneStocked} / ${zoneExpected}`,
+      detail: zoneFacings,
+      graphic: zoneStatus === "stocked" ? "check" : "alert",
+    },
+  };
+
+  return bay.cards.map((card) => ({ ...card, ...(overrides[card.id] ?? {}) }));
+}
+
 function toneClasses(tone: Tone) {
   if (tone === "red") return "border-red-400/28 text-red-200";
   if (tone === "green") return "border-emerald-300/24 text-emerald-200";
+  if (tone === "orange") return "border-amber-300/30 text-amber-100";
   return "border-cyan-300/20 text-cyan-100";
 }
 
-function HeroCardGraphic({ graphic, tone }: { graphic: HeroCardGraphic; tone: Tone }) {
+function clampMetric(value: number) {
+  return Math.min(Math.max(value, 0), 100);
+}
+
+function getCardMetricValue(card: HeroCard) {
+  const metricSource = card.value ?? card.pill ?? card.detail;
+  const match = metricSource.match(/\d+(?:\.\d+)?/);
+  return match ? clampMetric(Number(match[0])) : 0;
+}
+
+function getMetricBarHeights(metric: number) {
+  const score = clampMetric(metric);
+  return [
+    Math.max(18, score * 0.34),
+    Math.max(22, score * 0.5),
+    Math.max(28, score * 0.68),
+    Math.max(34, score * 0.92),
+  ];
+}
+
+type SparklinePoint = {
+  x: number;
+  y: number;
+};
+
+function getMetricSparklinePoints(metric: number, tone: Tone): SparklinePoint[] {
+  const score = clampMetric(metric);
+
+  if (tone === "red" || score < 65) {
+    return [
+      { x: 5, y: 8 },
+      { x: 16, y: 14 },
+      { x: 25, y: 11 },
+      { x: 36, y: 20 },
+      { x: 47, y: 26 },
+    ];
+  }
+
+  if (tone === "orange" || score < 82) {
+    return [
+      { x: 5, y: 22 },
+      { x: 16, y: 16 },
+      { x: 25, y: 20 },
+      { x: 36, y: 15 },
+      { x: 47, y: 17 },
+    ];
+  }
+
+  return [
+    { x: 5, y: 26 },
+    { x: 17.5, y: 19 },
+    { x: 26, y: 23.5 },
+    { x: 37, y: 14 },
+    { x: 47, y: 8 },
+  ];
+}
+
+function getSparklinePath(points: SparklinePoint[]) {
+  return points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
+}
+
+function getSparklineArrowPoints(points: SparklinePoint[]) {
+  const tip = points[points.length - 1];
+  const previous = points[points.length - 2];
+  if (!tip || !previous) return "";
+
+  const dx = tip.x - previous.x;
+  const dy = tip.y - previous.y;
+  const length = Math.sqrt(dx * dx + dy * dy) || 1;
+  const ux = dx / length;
+  const uy = dy / length;
+  const baseX = tip.x - ux * 6.4;
+  const baseY = tip.y - uy * 6.4;
+  const perpX = -uy;
+  const perpY = ux;
+  const left = { x: baseX + perpX * 3.7, y: baseY + perpY * 3.7 };
+  const right = { x: baseX - perpX * 3.7, y: baseY - perpY * 3.7 };
+
+  return `M ${left.x.toFixed(1)} ${left.y.toFixed(1)} L ${tip.x.toFixed(1)} ${tip.y.toFixed(1)} L ${right.x.toFixed(1)} ${right.y.toFixed(1)}`;
+}
+
+function HeroCardGraphic({ graphic, tone, metric }: { graphic: HeroCardGraphic; tone: Tone; metric: number }) {
   if (graphic === "bars") {
+    const barHeights = getMetricBarHeights(metric);
+
     return (
       <span className="sl-card-graphic sl-card-bars" aria-hidden="true">
-        {[36, 58, 46, 72].map((height, index) => (
-          <span key={index} style={{ height: `${height}%` }} />
+        {barHeights.map((height, index) => (
+          <motion.span
+            key={index}
+            initial={false}
+            animate={{ height: `${height}%` }}
+            transition={{ type: "spring", stiffness: 180, damping: 22, delay: index * 0.025 }}
+          />
         ))}
       </span>
     );
@@ -580,7 +859,7 @@ function HeroCardGraphic({ graphic, tone }: { graphic: HeroCardGraphic; tone: To
 
   if (graphic === "alert") {
     return (
-      <span className="sl-card-graphic sl-card-alert" aria-hidden="true">
+      <span className={cn("sl-card-graphic sl-card-alert", tone === "orange" && "sl-card-alert-orange")} aria-hidden="true">
         <Icon className="h-4 w-4">
           <path d="M12 7v6" />
           <path d="M12 17h.01" />
@@ -590,11 +869,37 @@ function HeroCardGraphic({ graphic, tone }: { graphic: HeroCardGraphic; tone: To
     );
   }
 
+  const sparklinePoints = getMetricSparklinePoints(metric, tone);
+  const sparklinePath = getSparklinePath(sparklinePoints);
+  const sparklineArrowPoints = getSparklineArrowPoints(sparklinePoints);
+  const sparklineKey = `${tone}-${Math.round(metric)}-${sparklinePath}`;
+
   return (
-    <span className={cn("sl-card-graphic sl-card-trend", tone === "red" && "sl-card-trend-red")} aria-hidden="true">
+    <span
+      className={cn(
+        "sl-card-graphic sl-card-trend",
+        tone === "red" && "sl-card-trend-red",
+        tone === "orange" && "sl-card-trend-orange",
+      )}
+      aria-hidden="true"
+    >
       <svg viewBox="0 0 52 34" fill="none">
-        <path d="M5 25.5 17.5 19l9 4.5L47 8" />
-        <path d="M39 8h8v8" />
+        <motion.path
+          key={`line-${sparklineKey}`}
+          className="sl-card-sparkline-line"
+          d={sparklinePath}
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 0.58, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <motion.path
+          key={`arrow-${sparklineKey}`}
+          className="sl-card-sparkline-arrow"
+          d={sparklineArrowPoints}
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 0.26, delay: 0.42 }}
+        />
       </svg>
     </span>
   );
@@ -609,6 +914,7 @@ function FloatingCard({
   active: boolean;
   onActivate: () => void;
 }) {
+  const metric = getCardMetricValue(card);
 
   return (
     <button
@@ -630,7 +936,7 @@ function FloatingCard({
       <span className="sl-card-content">
         <span className="sl-card-topline">
           <span className="sl-card-title sl-card-label">{card.label}</span>
-          {card.status && <span className="sl-card-status">{card.status}</span>}
+          {card.status && <span className={cn("sl-card-status", `sl-card-status-${card.tone}`)}>{card.status}</span>}
         </span>
 
         <span className="sl-card-main">
@@ -641,6 +947,7 @@ function FloatingCard({
                   "sl-card-value",
                   card.tone === "red" && "text-red-300",
                   card.tone === "green" && "text-emerald-300",
+                  card.tone === "orange" && "text-amber-300",
                   card.tone === "cyan" && "text-cyan-200",
                 )}
               >
@@ -651,7 +958,7 @@ function FloatingCard({
             )}
             {card.value && <span className="sl-card-detail">{card.detail}</span>}
           </span>
-          <HeroCardGraphic graphic={card.graphic} tone={card.tone} />
+          <HeroCardGraphic graphic={card.graphic} tone={card.tone} metric={metric} />
         </span>
       </span>
     </button>
@@ -713,9 +1020,9 @@ const flowSteps: FlowStep[] = [
 ];
 
 const flowSequence = [0, 1, 2];
-const flowStepHoldMs = 1450;
+const flowStepHoldMs = 3600;
 const flowTravelMs = 850;
-const flowManualHoldMs = 1800;
+const flowManualHoldMs = 4400;
 const flowResetHideMs = 150;
 const flowResetShowMs = 80;
 
@@ -873,7 +1180,7 @@ function ExpectedFacingsFlow() {
 }
 
 
-const beforeLimitations = ["Manual checks", "Missed gaps", "Slow response"] as const;
+const beforeLimitations = ["Manual checks", "Missed empty shelves", "Slow response"] as const;
 const afterWins = ["Live issue detection", "Expected-facing alerts", "Prioritised actions"] as const;
 
 function BeforeAfterShelfLensSection() {
@@ -1357,10 +1664,17 @@ function ShelfLensHeroStage() {
   const [selectedZoneId, setSelectedZoneId] = React.useState(heroBays[0].defaultZoneId);
   const [hoveredZoneId, setHoveredZoneId] = React.useState<string | null>(null);
   const activeBay = heroBays[activeBayIndex];
-  const activeCards = activeBay.cards;
-  const visibleCards = activeCards.filter((card) => card.id !== "ai-scan");
-  const activeCard = activeCards.find((card) => card.id === activeId) ?? activeCards[5];
   const displayedZoneId = hoveredZoneId ?? selectedZoneId;
+  const expectedShelves = getExpectedShelves(activeBay);
+  const activeShelf = getExpectedShelfForZone(activeBay, displayedZoneId);
+  const activeShelfRows = getExpectedRowsForShelf(activeBay, activeShelf);
+  const activeShelfSummary = getExpectedShelfSummary(activeShelfRows);
+  const hasExpectedShelfTabs = expectedShelves.length > 1;
+  const activeShelfZoneIds = new Set(activeShelf.zoneIds);
+  const activeZoneRow = activeBay.rows.find((row) => row.id === displayedZoneId) ?? activeShelfRows[0];
+  const activeCards = getShelfAwareCards(activeBay, activeShelf, activeShelfRows, activeZoneRow);
+  const visibleCards = activeCards.filter((card) => card.id !== "ai-scan");
+  const activeCard = activeCards.find((card) => card.id === activeId) ?? activeCards.find((card) => card.id === "expected") ?? activeCards[0];
   const showBay = (direction: -1 | 1) => {
     const nextIndex = (activeBayIndex + direction + heroBays.length) % heroBays.length;
     const nextBay = heroBays[nextIndex];
@@ -1368,6 +1682,17 @@ function ShelfLensHeroStage() {
     setActiveBayIndex(nextIndex);
     setSelectedZoneId(nextBay.defaultZoneId);
     setHoveredZoneId(null);
+  };
+  const showExpectedShelf = (shelf: ExpectedShelf) => {
+    const nextZoneId = shelf.zoneIds[0];
+    if (!nextZoneId) return;
+
+    setSelectedZoneId(nextZoneId);
+    setHoveredZoneId(null);
+  };
+  const previewExpectedShelf = (shelf: ExpectedShelf) => {
+    const nextZoneId = shelf.zoneIds[0];
+    if (nextZoneId) setHoveredZoneId(nextZoneId);
   };
 
   return (
@@ -1454,7 +1779,7 @@ function ShelfLensHeroStage() {
           </motion.div>
 
           <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-xs font-semibold text-white/50 sm:mt-8 sm:text-sm">
-            {["Expected zones", "Gap detection", "Store visibility"].map((item) => (
+            {["Expected zones", "Empty-zone detection", "Store visibility"].map((item) => (
               <span key={item} className="inline-flex items-center gap-2">
                 <span className="grid h-6 w-6 place-items-center rounded-full border border-cyan-300/18 bg-cyan-300/[0.055] text-cyan-300">
                   <Icons.Check className="h-3.5 w-3.5" />
@@ -1494,6 +1819,7 @@ function ShelfLensHeroStage() {
                   "shrink-0 rounded-full border px-3 py-1 text-xs font-black",
                   activeCard.tone === "red" && "border-red-400/28 bg-red-500/[0.12] text-red-100",
                   activeCard.tone === "green" && "border-emerald-300/24 bg-emerald-400/[0.10] text-emerald-100",
+                  activeCard.tone === "orange" && "border-amber-300/30 bg-amber-400/[0.12] text-amber-100",
                   activeCard.tone === "cyan" && "border-cyan-300/24 bg-cyan-300/[0.09] text-cyan-100",
                 )}
               >
@@ -1589,7 +1915,11 @@ function ShelfLensHeroStage() {
                     <polygon points={zone.points} className="sl-hero-zone-hit" />
                     <polygon
                       points={zone.points}
-                      className={cn("sl-hero-zone", zone.id === displayedZoneId && "is-selected")}
+                      className={cn(
+                        "sl-hero-zone",
+                        hasExpectedShelfTabs && activeShelfZoneIds.has(zone.id) && "is-in-active-shelf",
+                        zone.id === displayedZoneId && "is-selected",
+                      )}
                       vectorEffect="non-scaling-stroke"
                       strokeLinejoin="round"
                     />
@@ -1611,48 +1941,87 @@ function ShelfLensHeroStage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: reduceMotion ? 0 : 0.32, ease: "easeOut" }}
               >
+                {hasExpectedShelfTabs && (
+                  <div className="sl-opus-expected-tabs" role="tablist" aria-label={`${activeBay.bayTitle} shelf tabs`}>
+                    {expectedShelves.map((shelf) => {
+                      const isActiveShelf = shelf.id === activeShelf.id;
+                      const shelfSummary = getExpectedShelfSummary(getExpectedRowsForShelf(activeBay, shelf));
+
+                      return (
+                        <button
+                          key={shelf.id}
+                          type="button"
+                          role="tab"
+                          aria-selected={isActiveShelf}
+                          className={cn("sl-opus-expected-tab", isActiveShelf && "is-active")}
+                          onClick={() => showExpectedShelf(shelf)}
+                          onFocus={() => previewExpectedShelf(shelf)}
+                          onBlur={() => setHoveredZoneId(null)}
+                          onMouseEnter={() => previewExpectedShelf(shelf)}
+                          onMouseLeave={() => setHoveredZoneId(null)}
+                          onPointerEnter={() => previewExpectedShelf(shelf)}
+                          onPointerLeave={() => setHoveredZoneId(null)}
+                        >
+                          <span>{shelf.label}</span>
+                          <small>{shelfSummary.stocked}</small>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
                 <div className="sl-opus-expected-panel-top">
                   <div className="sl-opus-expected-pill sl-opus-expected-pill-primary">
-                    <span>{activeBay.expected.stocked}</span>
+                    <span>{activeShelfSummary.stocked}</span>
                     <small>facings stocked</small>
                   </div>
                   <div className="sl-opus-expected-pill">
-                    <span>{activeBay.expected.missing}</span>
+                    <span>{activeShelfSummary.missing}</span>
                     <small>Missing</small>
                   </div>
                 </div>
 
-                <div className="sl-opus-expected-loaded">Expected zones loaded: {activeBay.expected.loaded}</div>
+                <div className="sl-opus-expected-loaded">Expected zones loaded: {activeShelfSummary.loaded}</div>
 
                 <div className="sl-opus-expected-rows">
-                  {activeBay.rows.map((row) => (
-                    <button
-                      key={row.id}
-                      type="button"
-                      aria-pressed={selectedZoneId === row.id}
-                      className={cn("sl-opus-expected-row", displayedZoneId === row.id && "is-selected")}
-                      onClick={() => setSelectedZoneId(row.id)}
-                      onFocus={() => setHoveredZoneId(row.id)}
-                      onBlur={() => setHoveredZoneId(null)}
-                      onMouseEnter={() => setHoveredZoneId(row.id)}
-                      onMouseLeave={() => setHoveredZoneId(null)}
-                      onPointerEnter={() => setHoveredZoneId(row.id)}
-                      onPointerMove={() => setHoveredZoneId(row.id)}
-                      onPointerLeave={() => setHoveredZoneId(null)}
-                    >
-                      <div className="sl-opus-expected-row-head">
-                        <span>{row.zone}</span>
-                        <span className={cn("sl-opus-expected-stocked", row.missing > 0 && "is-missing")}>
-                          {row.missing > 0 ? "Gap" : "Stocked"}
-                        </span>
-                      </div>
-                      <div className="sl-opus-expected-row-meta">
-                        <span>Expected {row.expected}</span>
-                        <span>{row.facings}</span>
-                        <span>Missing {row.missing}</span>
-                      </div>
-                    </button>
-                  ))}
+                  {activeShelfRows.map((row) => {
+                    const rowStatus = getExpectedRowStatus(row);
+
+                    return (
+                      <button
+                        key={row.id}
+                        type="button"
+                        aria-pressed={selectedZoneId === row.id}
+                        className={cn("sl-opus-expected-row", displayedZoneId === row.id && "is-selected")}
+                        onClick={() => setSelectedZoneId(row.id)}
+                        onFocus={() => setHoveredZoneId(row.id)}
+                        onBlur={() => setHoveredZoneId(null)}
+                        onMouseEnter={() => setHoveredZoneId(row.id)}
+                        onMouseLeave={() => setHoveredZoneId(null)}
+                        onPointerEnter={() => setHoveredZoneId(row.id)}
+                        onPointerMove={() => setHoveredZoneId(row.id)}
+                        onPointerLeave={() => setHoveredZoneId(null)}
+                      >
+                        <div className="sl-opus-expected-row-head">
+                          <span>{row.zone}</span>
+                          <span
+                            className={cn(
+                              "sl-opus-expected-stocked",
+                              rowStatus === "empty" && "is-empty",
+                              rowStatus === "underfilled" && "is-underfilled",
+                            )}
+                          >
+                            {getExpectedRowStatusLabel(row)}
+                          </span>
+                        </div>
+                        <div className="sl-opus-expected-row-meta">
+                          <span>Expected {row.expected}</span>
+                          <span>{row.facings}</span>
+                          <span>Missing {row.missing}</span>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </motion.div>
             </div>
@@ -1698,7 +2067,7 @@ const requestAccessRequiredFields: Array<keyof RequestAccessFormState> = [
 ];
 
 const requestAccessIssueOptions = [
-  "Empty shelves / gaps",
+  "Empty shelves",
   "Expected-facing compliance",
   "Staff visibility",
   "Multi-store monitoring",
@@ -1925,7 +2294,7 @@ function RequestAccessModal() {
 
               <label className="block min-w-0">
                 <RequestAccessLabel>Message / notes</RequestAccessLabel>
-                <textarea name="message" rows={4} value={form.message} placeholder="Tell us what shelf gaps, locations, or store workflows you want to monitor." onChange={(event) => updateField("message", event.target.value)} className={cn(requestAccessInputClass, "min-h-[128px] resize-y")} />
+                <textarea name="message" rows={4} value={form.message} placeholder="Tell us what empty shelves, locations, or store workflows you want to monitor." onChange={(event) => updateField("message", event.target.value)} className={cn(requestAccessInputClass, "min-h-[128px] resize-y")} />
               </label>
 
               {submitState === "error" && (
