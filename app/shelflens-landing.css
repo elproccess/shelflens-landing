@@ -412,6 +412,11 @@
   aspect-ratio: 9 / 14;
 }
 
+.sl-opus-main-frame-detergent .sl-opus-screen,
+.sl-opus-main-frame-detergent .sl-opus-video {
+  aspect-ratio: 1463 / 3010;
+}
+
 .sl-opus-screen::after {
   content: "";
   position: absolute;
@@ -526,6 +531,26 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   padding: 12px;
   transform: translateX(-50%);
+}
+
+.sl-opus-expected-panel-bistro {
+  top: 402px;
+}
+
+.sl-opus-expected-panel-cereal {
+  top: 468px;
+}
+
+.sl-opus-expected-panel-jar {
+  top: 424px;
+}
+
+.sl-opus-expected-panel-detergent {
+  top: 548px;
+}
+
+.sl-opus-stage-bay-detergent {
+  min-height: 1140px;
 }
 
 .sl-opus-expected-titlebar {
@@ -1372,6 +1397,46 @@
   .sl-opus-expected-loaded,
   .sl-opus-expected-stocked {
     font-size: 7.5px;
+  }
+}
+
+.sl-opus-expected-panel-bistro {
+  top: 402px;
+  bottom: auto;
+}
+
+.sl-opus-expected-panel-cereal {
+  top: 468px;
+  bottom: auto;
+}
+
+.sl-opus-expected-panel-jar {
+  top: 424px;
+  bottom: auto;
+}
+
+.sl-opus-expected-panel-detergent {
+  top: 548px;
+  bottom: auto;
+}
+
+.sl-opus-stage-bay-detergent {
+  min-height: 1140px;
+}
+
+@media (max-width: 980px) {
+  .sl-opus-stage-bay-detergent {
+    min-height: 1160px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sl-opus-stage-bay-detergent {
+    min-height: 1260px;
+  }
+
+  .sl-opus-expected-panel-detergent {
+    top: 548px;
   }
 }
 

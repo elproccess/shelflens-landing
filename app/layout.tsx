@@ -23,23 +23,24 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon.ico",
+        url: "/shelflens-icon-512.png?v=3",
+        type: "image/png",
+        sizes: "512x512",
+      },
+      {
+        url: "/shelflens-icon-192.png?v=3",
+        type: "image/png",
+        sizes: "192x192",
+      },
+      {
+        url: "/favicon.ico?v=3",
         type: "image/x-icon",
       },
-      {
-        url: "/favicon.png",
-        type: "image/png",
-        sizes: "512x512",
-      },
-      {
-        url: "/shelflens-exact-logo-pack/shelflens-tab-icon-transparent.png",
-        type: "image/png",
-        sizes: "512x512",
-      },
     ],
-    shortcut: "/favicon.ico",
-    apple: "/shelflens-exact-logo-pack/shelflens-tab-icon-transparent.png",
+    shortcut: "/favicon.ico?v=3",
+    apple: "/apple-touch-icon.png?v=3",
   },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "ShelfLens | Phone-Based Shelf Visibility",
     description:

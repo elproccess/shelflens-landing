@@ -570,7 +570,7 @@ const heroBays: HeroBay[] = [
     shelfLabel: "Shelf 1",
     statusLine: "CRITICAL - 41.7%",
     time: "12:47 PM",
-    viewBox: "0 0 1463 2276",
+    viewBox: "0 0 1463 3010",
     defaultZoneId: "detergent-upper-1",
     expected: {
       stocked: "24 / 38",
@@ -631,13 +631,13 @@ const heroBays: HeroBay[] = [
       { id: "detergent-large-gap", label: "Lenor middle shelf", points: "268,1410 812,1406 827,1680 328,1688" },
       { id: "detergent-middle-2", label: "Lenor scent boosters", points: "812,1406 990,1404 986,1678 827,1680" },
       { id: "detergent-middle-3", label: "Lenor floral pack", points: "990,1404 1206,1398 1180,1676 990,1678" },
-      { id: "detergent-lower-1", label: "Lenor blue softener", points: "329,1688 477,1688 487,1858 352,1858" },
-      { id: "detergent-lower-2", label: "Lenor blue and yellow softener", points: "477,1688 620,1688 620,1858 487,1858" },
-      { id: "detergent-lower-3", label: "Lenor value pack yellow", points: "620,1688 768,1686 760,1858 620,1858" },
-      { id: "detergent-lower-4", label: "Lenor value pack twin", points: "768,1686 947,1684 935,1858 760,1858" },
-      { id: "detergent-base-1", label: "Lenor XL blue bottles", points: "390,1888 606,1888 608,2117 420,2117" },
-      { id: "detergent-base-2", label: "Lenor XL yellow bottles", points: "606,1888 807,1888 802,2117 608,2117" },
-      { id: "detergent-base-gap", label: "Lenor lower shelf", points: "807,1888 1115,1888 1100,2117 802,2117" },
+      { id: "detergent-lower-1", label: "Lenor blue softener", points: "333,1693 466,1693 501,1916 373,1916" },
+      { id: "detergent-lower-2", label: "Lenor blue and yellow softener", points: "466,1693 614,1693 617,1916 501,1916" },
+      { id: "detergent-lower-3", label: "Lenor value pack yellow", points: "614,1693 760,1693 766,1916 617,1916" },
+      { id: "detergent-lower-4", label: "Lenor value pack twin", points: "760,1693 936,1693 924,1916 766,1916" },
+      { id: "detergent-base-1", label: "Lenor XL blue bottles", points: "373,1916 611,1916 611,2168 407,2176" },
+      { id: "detergent-base-2", label: "Lenor XL yellow bottles", points: "611,1916 849,1916 849,2156 611,2168" },
+      { id: "detergent-base-gap", label: "Lenor lower shelf", points: "849,1916 1125,1916 1091,2135 849,2156" },
     ],
     cards: detergentCards,
   },
@@ -1850,7 +1850,7 @@ function ShelfLensHeroStage() {
           </div>
         </div>
 
-        <div className="sl-opus-stage relative mx-auto w-full overflow-visible">
+        <div className={cn("sl-opus-stage relative mx-auto w-full overflow-visible", `sl-opus-stage-bay-${activeBay.id}`)}>
           {visibleCards.map((card) => (
             <FloatingCard
               key={card.id}
@@ -1913,7 +1913,10 @@ function ShelfLensHeroStage() {
             initial={reduceMotion ? false : { opacity: 0, y: 30, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: reduceMotion ? 0 : 0.84, delay: reduceMotion ? 0 : 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="sl-opus-main-frame relative z-20 mx-auto rounded-[34px] border border-cyan-300/18 bg-[#06101b]/82 p-3 shadow-[0_42px_150px_rgba(0,0,0,0.56),0_0_95px_rgba(34,211,238,0.12)] backdrop-blur-2xl"
+            className={cn(
+              "sl-opus-main-frame relative z-20 mx-auto rounded-[34px] border border-cyan-300/18 bg-[#06101b]/82 p-3 shadow-[0_42px_150px_rgba(0,0,0,0.56),0_0_95px_rgba(34,211,238,0.12)] backdrop-blur-2xl",
+              `sl-opus-main-frame-${activeBay.id}`,
+            )}
           >
             <div className="absolute -inset-10 -z-10 rounded-[54px] bg-[radial-gradient(circle_at_48%_30%,rgba(34,211,238,0.20),transparent_42%),radial-gradient(circle_at_76%_74%,rgba(16,185,129,0.12),transparent_40%)] blur-2xl" />
             <div className="flex items-center justify-between border-b border-white/8 px-3 pb-3 pt-1">
@@ -1927,7 +1930,7 @@ function ShelfLensHeroStage() {
               </div>
             </div>
 
-            <div className="sl-opus-screen relative mt-3 overflow-hidden rounded-[24px] border border-white/10 bg-black">
+            <div className={cn("sl-opus-screen relative mt-3 overflow-hidden rounded-[24px] border border-white/10 bg-black", `sl-opus-screen-${activeBay.id}`)}>
               <motion.img
                 key={activeBay.id}
                 src={activeBay.imageSrc}
@@ -1989,7 +1992,11 @@ function ShelfLensHeroStage() {
 
             </div>
 
-            <div className="sl-opus-expected-panel" role="group" aria-label="Expected facing zone selection">
+            <div
+              className={cn("sl-opus-expected-panel", `sl-opus-expected-panel-${activeBay.id}`)}
+              role="group"
+              aria-label="Expected facing zone selection"
+            >
               <div className="sl-opus-expected-titlebar">
                 <span>Expected facings</span>
                 <span>{activeBay.time}</span>
