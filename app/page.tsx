@@ -217,14 +217,14 @@ const expectedFacingRows = [
 }>;
 
 const heroZoneOverlays = [
-  { id: "bistro-upper-maldon", label: "Maldon sea salt", points: "548,1000 842,1000 825,1268 560,1268" },
-  { id: "bistro-upper-empty", label: "Salt shelf space", points: "842,1000 956,1000 931,1268 825,1268" },
-  { id: "bistro-upper-salt-breadcrumbs", label: "Sea salt and breadcrumbs", points: "956,1000 1162,996 1124,1268 931,1268" },
-  { id: "bistro-upper-paxo", label: "Paxo stuffing mix", points: "1162,996 1290,996 1238,1268 1124,1268" },
-  { id: "red-bistro", label: "red bistro", points: "356,1468 572,1468 570,1630 374,1630" },
-  { id: "green-bistro", label: "green bistro", points: "572,1468 765,1468 761,1630 570,1630" },
-  { id: "orange-bistro", label: "orange bistro", points: "765,1468 965,1469 956,1630 761,1630" },
-  { id: "sainsburys-gravy", label: "Sainsbury's gravy", points: "965,1469 1204,1469 1159,1630 956,1630" },
+  { id: "bistro-upper-maldon", label: "Maldon sea salt", points: "474,758 722,758 704,1000 482,1000" },
+  { id: "bistro-upper-empty", label: "Salt shelf space", points: "722,758 822,758 798,1000 704,1000" },
+  { id: "bistro-upper-salt-breadcrumbs", label: "Sea salt and breadcrumbs", points: "822,758 1012,758 974,1003 798,1000" },
+  { id: "bistro-upper-paxo", label: "Paxo stuffing mix", points: "1012,758 1131,758 1080,997 974,1003" },
+  { id: "red-bistro", label: "red bistro", points: "303,1172 491,1172 494,1303 320,1303" },
+  { id: "green-bistro", label: "green bistro", points: "491,1172 661,1172 652,1303 494,1303" },
+  { id: "orange-bistro", label: "orange bistro", points: "661,1172 842,1172 819,1303 652,1303" },
+  { id: "sainsburys-gravy", label: "Sainsbury's gravy", points: "842,1172 1039,1172 1008,1303 819,1303" },
 ] as const;
 
 type HeroBay = {
@@ -442,13 +442,13 @@ const detergentCards: HeroCard[] = cards.map((card) => ({ ...card, ...(detergent
 const heroBays: HeroBay[] = [
   {
     id: "bistro",
-    imageSrc: "/shelflens-expected-facing.png",
+    imageSrc: "/new.png",
     imageAlt: "ShelfLens expected-facing Inspect mockup for a Bistro shelf bay.",
     bayTitle: "Aisle 1 - Left - Bay 2",
-    shelfLabel: "Shelf 2",
+    shelfLabel: "Shelf 3",
     statusLine: "OK - 100.0%",
     time: "12:47 PM",
-    viewBox: "0 0 1449 2254",
+    viewBox: "0 0 1254 1951",
     defaultZoneId: "bistro-upper-maldon",
     expected: {
       stocked: "20 / 21",
