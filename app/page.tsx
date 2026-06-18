@@ -188,9 +188,21 @@ const cards: HeroCard[] = [
   },
 ];
 
-type ExpectedZoneId = "red-bistro" | "green-bistro" | "orange-bistro" | "sainsburys-gravy";
+type ExpectedZoneId =
+  | "bistro-upper-maldon"
+  | "bistro-upper-empty"
+  | "bistro-upper-salt-breadcrumbs"
+  | "bistro-upper-paxo"
+  | "red-bistro"
+  | "green-bistro"
+  | "orange-bistro"
+  | "sainsburys-gravy";
 
 const expectedFacingRows = [
+  { id: "bistro-upper-maldon", zone: "Maldon sea salt", expected: 3, facings: "3 / 3 front facings stocked", missing: 0 },
+  { id: "bistro-upper-empty", zone: "Salt shelf space", expected: 1, facings: "0 / 1 front facing stocked", missing: 1, status: "empty" },
+  { id: "bistro-upper-salt-breadcrumbs", zone: "Sea salt and breadcrumbs", expected: 4, facings: "4 / 4 front facings stocked", missing: 0 },
+  { id: "bistro-upper-paxo", zone: "Paxo stuffing mix", expected: 1, facings: "1 / 1 front facing stocked", missing: 0 },
   { id: "red-bistro", zone: "red bistro", expected: 3, facings: "3 / 3 facings stocked", missing: 0 },
   { id: "green-bistro", zone: "green bistro", expected: 3, facings: "3 / 3 facings stocked", missing: 0 },
   { id: "orange-bistro", zone: "orange bistro", expected: 3, facings: "3 / 3 facings stocked", missing: 0 },
@@ -201,9 +213,14 @@ const expectedFacingRows = [
   expected: number;
   facings: string;
   missing: number;
+  status?: "stocked" | "empty" | "underfilled";
 }>;
 
 const heroZoneOverlays = [
+  { id: "bistro-upper-maldon", label: "Maldon sea salt", points: "548,1000 842,1000 825,1268 560,1268" },
+  { id: "bistro-upper-empty", label: "Salt shelf space", points: "842,1000 956,1000 931,1268 825,1268" },
+  { id: "bistro-upper-salt-breadcrumbs", label: "Sea salt and breadcrumbs", points: "956,1000 1162,996 1124,1268 931,1268" },
+  { id: "bistro-upper-paxo", label: "Paxo stuffing mix", points: "1162,996 1290,996 1238,1268 1124,1268" },
   { id: "red-bistro", label: "red bistro", points: "356,1468 572,1468 570,1630 374,1630" },
   { id: "green-bistro", label: "green bistro", points: "572,1468 765,1468 761,1630 570,1630" },
   { id: "orange-bistro", label: "orange bistro", points: "765,1468 965,1469 956,1630 761,1630" },
@@ -432,13 +449,30 @@ const heroBays: HeroBay[] = [
     statusLine: "OK - 100.0%",
     time: "12:47 PM",
     viewBox: "0 0 1449 2254",
-    defaultZoneId: "red-bistro",
+    defaultZoneId: "bistro-upper-maldon",
     expected: {
-      stocked: "12 / 12",
-      missing: "0",
-      loaded: 4,
+      stocked: "20 / 21",
+      missing: "1",
+      loaded: 8,
     },
     rows: expectedFacingRows,
+    shelves: [
+      {
+        id: "bistro-upper",
+        label: "Shelf 1",
+        zoneIds: [
+          "bistro-upper-maldon",
+          "bistro-upper-empty",
+          "bistro-upper-salt-breadcrumbs",
+          "bistro-upper-paxo",
+        ],
+      },
+      {
+        id: "bistro-lower",
+        label: "Shelf 2",
+        zoneIds: ["red-bistro", "green-bistro", "orange-bistro", "sainsburys-gravy"],
+      },
+    ],
     zones: heroZoneOverlays,
     cards,
   },
@@ -539,9 +573,9 @@ const heroBays: HeroBay[] = [
     viewBox: "0 0 1463 2276",
     defaultZoneId: "detergent-upper-1",
     expected: {
-      stocked: "5 / 12",
-      missing: "7",
-      loaded: 8,
+      stocked: "24 / 38",
+      missing: "14",
+      loaded: 15,
     },
     rows: [
       { id: "detergent-upper-1", zone: "Lenor Outdoorable blue", expected: 2, facings: "1 / 2 front facings stocked", missing: 1, status: "underfilled" },
@@ -552,6 +586,13 @@ const heroBays: HeroBay[] = [
       { id: "detergent-large-gap", zone: "Lenor middle shelf", expected: 6, facings: "0 / 6 front facings stocked", missing: 6, status: "empty" },
       { id: "detergent-middle-2", zone: "Lenor scent boosters", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
       { id: "detergent-middle-3", zone: "Lenor floral pack", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-lower-1", zone: "Lenor blue softener", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-lower-2", zone: "Lenor blue and yellow softener", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-lower-3", zone: "Lenor value pack yellow", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-lower-4", zone: "Lenor value pack twin", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-base-1", zone: "Lenor XL blue bottles", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-base-2", zone: "Lenor XL yellow bottles", expected: 2, facings: "2 / 2 front facings stocked", missing: 0 },
+      { id: "detergent-base-gap", zone: "Lenor lower shelf", expected: 6, facings: "0 / 6 front facings stocked", missing: 6, status: "empty" },
     ],
     shelves: [
       {
@@ -570,6 +611,16 @@ const heroBays: HeroBay[] = [
         label: "Shelf 2",
         zoneIds: ["detergent-large-gap", "detergent-middle-2", "detergent-middle-3"],
       },
+      {
+        id: "detergent-lower",
+        label: "Shelf 3",
+        zoneIds: ["detergent-lower-1", "detergent-lower-2", "detergent-lower-3", "detergent-lower-4"],
+      },
+      {
+        id: "detergent-base",
+        label: "Shelf 4",
+        zoneIds: ["detergent-base-1", "detergent-base-2", "detergent-base-gap"],
+      },
     ],
     zones: [
       { id: "detergent-upper-1", label: "Lenor Outdoorable blue", points: "227,1102 444,1098 464,1408 279,1404" },
@@ -580,10 +631,19 @@ const heroBays: HeroBay[] = [
       { id: "detergent-large-gap", label: "Lenor middle shelf", points: "268,1410 812,1406 827,1680 328,1688" },
       { id: "detergent-middle-2", label: "Lenor scent boosters", points: "812,1406 990,1404 986,1678 827,1680" },
       { id: "detergent-middle-3", label: "Lenor floral pack", points: "990,1404 1206,1398 1180,1676 990,1678" },
+      { id: "detergent-lower-1", label: "Lenor blue softener", points: "329,1688 477,1688 487,1858 352,1858" },
+      { id: "detergent-lower-2", label: "Lenor blue and yellow softener", points: "477,1688 620,1688 620,1858 487,1858" },
+      { id: "detergent-lower-3", label: "Lenor value pack yellow", points: "620,1688 768,1686 760,1858 620,1858" },
+      { id: "detergent-lower-4", label: "Lenor value pack twin", points: "768,1686 947,1684 935,1858 760,1858" },
+      { id: "detergent-base-1", label: "Lenor XL blue bottles", points: "390,1888 606,1888 608,2117 420,2117" },
+      { id: "detergent-base-2", label: "Lenor XL yellow bottles", points: "606,1888 807,1888 802,2117 608,2117" },
+      { id: "detergent-base-gap", label: "Lenor lower shelf", points: "807,1888 1115,1888 1100,2117 802,2117" },
     ],
     cards: detergentCards,
   },
 ];
+
+const initialHeroBayIndex = Math.max(heroBays.findIndex((bay) => bay.id === "detergent"), 0);
 
 function getExpectedShelves(bay: HeroBay): ReadonlyArray<ExpectedShelf> {
   if (bay.shelves?.length) return bay.shelves;
@@ -1659,9 +1719,9 @@ function AnimatedHeroWord({ reduceMotion }: { reduceMotion: boolean }) {
 
 function ShelfLensHeroStage() {
   const reduceMotion = Boolean(useReducedMotion());
-  const [activeBayIndex, setActiveBayIndex] = React.useState(0);
+  const [activeBayIndex, setActiveBayIndex] = React.useState(initialHeroBayIndex);
   const [activeId, setActiveId] = React.useState("expected");
-  const [selectedZoneId, setSelectedZoneId] = React.useState(heroBays[0].defaultZoneId);
+  const [selectedZoneId, setSelectedZoneId] = React.useState(heroBays[initialHeroBayIndex].defaultZoneId);
   const [hoveredZoneId, setHoveredZoneId] = React.useState<string | null>(null);
   const activeBay = heroBays[activeBayIndex];
   const displayedZoneId = hoveredZoneId ?? selectedZoneId;
@@ -1955,12 +2015,12 @@ function ShelfLensHeroStage() {
                           aria-selected={isActiveShelf}
                           className={cn("sl-opus-expected-tab", isActiveShelf && "is-active")}
                           onClick={() => showExpectedShelf(shelf)}
-                          onFocus={() => previewExpectedShelf(shelf)}
-                          onBlur={() => setHoveredZoneId(null)}
-                          onMouseEnter={() => previewExpectedShelf(shelf)}
-                          onMouseLeave={() => setHoveredZoneId(null)}
-                          onPointerEnter={() => previewExpectedShelf(shelf)}
-                          onPointerLeave={() => setHoveredZoneId(null)}
+                          onPointerEnter={(event) => {
+                            if (event.pointerType === "mouse") previewExpectedShelf(shelf);
+                          }}
+                          onPointerLeave={(event) => {
+                            if (event.pointerType === "mouse") setHoveredZoneId(null);
+                          }}
                         >
                           <span>{shelf.label}</span>
                           <small>{shelfSummary.stocked}</small>
